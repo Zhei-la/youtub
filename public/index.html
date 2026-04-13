@@ -412,6 +412,201 @@
   @media (max-width: 980px) {
     .mobile-menu-btn { display: inline-flex; }
   }
+
+  /* IDEA HELPER BUTTONS */
+  .idea-tools {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .idea-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(212,255,58,0.12), rgba(58,138,255,0.08));
+    border: 1px solid rgba(212,255,58,0.3);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .idea-btn:hover {
+    background: linear-gradient(135deg, rgba(212,255,58,0.2), rgba(58,138,255,0.12));
+    transform: translateY(-1px);
+  }
+  .idea-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* IDEA MODAL */
+  .idea-modal-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .idea-modal-bg.open { display: flex; }
+  .idea-modal {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 720px;
+    width: 100%;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .idea-modal h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .idea-modal .modal-sub {
+    color: var(--text-2);
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+  .idea-modal .close-x {
+    position: absolute;
+    top: 18px; right: 18px;
+    width: 32px; height: 32px;
+    background: var(--bg-2);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: var(--text-1);
+    font-size: 18px;
+  }
+  .idea-modal .close-x:hover { background: var(--bg-3); color: var(--text-0); }
+
+  .idea-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .idea-item {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .idea-item:hover {
+    border-color: var(--accent);
+    background: var(--bg-3);
+    transform: translateY(-1px);
+  }
+  .idea-item .title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-0);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .idea-item .topic {
+    font-size: 13px;
+    color: var(--text-1);
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .idea-item .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .idea-item .meta-tag {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    color: var(--text-1);
+    font-weight: 500;
+  }
+  .idea-item .meta-tag.target {
+    border-color: rgba(58,138,255,0.4);
+    color: var(--accent-3);
+  }
+  .idea-item .meta-tag.revenue {
+    border-color: rgba(255,183,58,0.4);
+    color: var(--pro);
+  }
+  .idea-item .character {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .idea-item .use-btn {
+    margin-top: 12px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: var(--bg-0);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .idea-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
+  .idea-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 40px 20px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
+  .idea-loading .big-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--bg-3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* keyword expand inline */
+  .keyword-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .keyword-row input {
+    flex: 1;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    color: var(--text-0);
+  }
+  .keyword-row input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--bg-3);
+  }
 </style>
 </head>
 <body>
@@ -476,6 +671,17 @@
           <div class="field full">
             <label>시리즈 제목</label>
             <input id="f-title" placeholder="예: 그날 밤 사라진 그녀" />
+            <div class="idea-tools">
+              <button type="button" class="idea-btn" id="btn-idea-recommend">
+                <span>🎲</span> 주제 추천 (5개)
+              </button>
+              <button type="button" class="idea-btn" id="btn-idea-keyword">
+                <span>✨</span> 키워드로 시놉시스 만들기
+              </button>
+              <button type="button" class="idea-btn" id="btn-idea-template">
+                <span>📚</span> 트렌딩 템플릿 (무료)
+              </button>
+            </div>
           </div>
           <div class="field full">
             <label>주제 / 시놉시스</label>
@@ -601,30 +807,53 @@
 
         <div class="form-grid">
           <div class="field full">
-            <label>OpenAI API Key <span style="color:var(--accent)">(필수)</span></label>
+            <label>제공자 (Provider)</label>
+            <div class="chip-group" id="g-provider">
+              <button type="button" class="chip active" data-val="openai">OpenAI (유료, 고품질)</button>
+              <button type="button" class="chip" data-val="groq">Groq (무료, 매우 빠름)</button>
+              <button type="button" class="chip" data-val="custom">기타 / 직접 설정</button>
+            </div>
+            <div class="help" id="provider-help">platform.openai.com 에서 발급 · sk-... 형식</div>
+          </div>
+
+          <div class="field full">
+            <label>API Key <span style="color:var(--accent)">(필수)</span></label>
             <input type="password" id="key-openai" placeholder="sk-..." />
-            <div class="help">platform.openai.com 에서 발급</div>
+            <div class="help">키는 브라우저에만 저장됩니다. 절대 서버로 전송되지 않습니다.</div>
+          </div>
+
+          <div class="field">
+            <label>모델</label>
+            <select id="key-model"></select>
+            <div class="help">제공자 선택 시 자동으로 가능한 모델이 채워집니다</div>
           </div>
           <div class="field">
-            <label>OpenAI 모델</label>
-            <select id="key-model">
-              <option value="gpt-4o-mini">gpt-4o-mini (저렴, 빠름)</option>
-              <option value="gpt-4o">gpt-4o (고품질)</option>
-              <option value="gpt-4-turbo">gpt-4-turbo</option>
-            </select>
+            <label>API Base URL</label>
+            <input id="key-base" placeholder="자동으로 설정됩니다" />
+            <div class="help">제공자에 따라 자동 설정됨. 직접 변경 가능</div>
           </div>
-          <div class="field">
-            <label>API Base URL (선택)</label>
-            <input id="key-base" placeholder="https://api.openai.com/v1" />
-            <div class="help">호환 API 사용 시 (Groq 등)</div>
-          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="card-title" style="font-size:15px;">이미지 생성 (확장 기능)</div>
+        <div class="card-desc">Scene 이미지 자동 생성용. 다음 업데이트에서 활성화 예정</div>
+
+        <div class="form-grid">
           <div class="field full">
-            <label>이미지 생성 API Key (선택, 확장용)</label>
-            <input type="password" id="key-image" placeholder="DALL-E / Stability 등" />
+            <label>이미지 생성기 선택</label>
+            <div class="chip-group" id="g-image-provider">
+              <button type="button" class="chip active" data-val="dalle">DALL·E 3 (OpenAI 키 재사용)</button>
+              <button type="button" class="chip" data-val="stability">Stability AI (별도 키)</button>
+              <button type="button" class="chip" data-val="pollinations">Pollinations (무료, 키 없음)</button>
+            </div>
+            <div class="help" id="image-help">DALL·E 3는 위에 입력한 OpenAI 키를 그대로 사용합니다. 별도 입력 불필요.</div>
           </div>
-          <div class="field full">
-            <label>TTS API Key (선택, 확장용)</label>
-            <input type="password" id="key-tts" placeholder="ElevenLabs / OpenAI TTS 등" />
+
+          <div class="field full" id="image-key-wrap" style="display:none;">
+            <label>Stability AI API Key</label>
+            <input type="password" id="key-image" placeholder="sk-..." />
+            <div class="help">platform.stability.ai 에서 발급</div>
           </div>
         </div>
 
@@ -659,6 +888,47 @@
       </div>
     </section>
   </main>
+</div>
+
+<!-- IDEA MODAL -->
+<div class="idea-modal-bg" id="idea-modal-bg">
+  <div class="idea-modal">
+    <button class="close-x" id="idea-close">×</button>
+    <h2 id="idea-title">🎲 주제 추천</h2>
+    <div class="modal-sub" id="idea-sub">현재 선택한 스타일/분위기/플랫폼에 맞춰 5개 추천</div>
+
+    <div id="idea-keyword-input" style="display:none;">
+      <div class="field">
+        <label>키워드 입력</label>
+        <div class="keyword-row">
+          <input id="keyword-input-field" placeholder="예: 첫사랑, 좀비, 짝사랑, 환생, 회사원..." />
+          <button class="btn btn-primary" id="btn-keyword-go">생성</button>
+        </div>
+        <div class="help">한 단어 또는 짧은 문구를 입력하세요. AI가 완전한 시놉시스로 확장합니다.</div>
+      </div>
+      <div style="height:18px;"></div>
+    </div>
+
+    <div id="idea-template-filter" style="display:none;">
+      <div class="field">
+        <label>카테고리</label>
+        <div class="chip-group" id="g-template-cat">
+          <button type="button" class="chip active" data-val="all">전체</button>
+          <button type="button" class="chip" data-val="drama">드라마/반전</button>
+          <button type="button" class="chip" data-val="horror">공포/스릴러</button>
+          <button type="button" class="chip" data-val="funny">웃긴/B급</button>
+          <button type="button" class="chip" data-val="emotion">감성/힐링</button>
+          <button type="button" class="chip" data-val="info">정보성/리뷰</button>
+          <button type="button" class="chip" data-val="global">글로벌 타겟</button>
+        </div>
+      </div>
+      <div style="height:18px;"></div>
+    </div>
+
+    <div id="idea-content">
+      <div class="idea-empty">버튼을 누르면 추천이 시작됩니다</div>
+    </div>
+  </div>
 </div>
 
 <div class="loading-overlay" id="loading">
@@ -698,19 +968,26 @@ function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toS
 
 /* ---------- KEYS ---------- */
 function loadKeys() {
-  state.keys = loadLS(LS_KEYS, { openai:'', model:'gpt-4o-mini', base:'', image:'', tts:'' });
+  state.keys = loadLS(LS_KEYS, { provider:'openai', openai:'', model:'gpt-4o-mini', base:'', imageProvider:'dalle', image:'' });
+  // 마이그레이션: 옛날 키에 provider 없으면 자동 감지
+  if (!state.keys.provider) state.keys.provider = detectProviderFromKey(state.keys.openai);
+  if (!state.keys.imageProvider) state.keys.imageProvider = 'dalle';
+
   $('#key-openai').value = state.keys.openai || '';
-  $('#key-model').value = state.keys.model || 'gpt-4o-mini';
   $('#key-base').value = state.keys.base || '';
   $('#key-image').value = state.keys.image || '';
-  $('#key-tts').value = state.keys.tts || '';
+
+  applyProvider(state.keys.provider);
+  if (state.keys.model) $('#key-model').value = state.keys.model;
+  applyImageProvider(state.keys.imageProvider);
   refreshApiStatus();
 }
 function refreshApiStatus() {
   const has = !!state.keys.openai;
   const el = $('#api-status');
   if (has) {
-    el.textContent = '● API 연결됨';
+    const provName = (PROVIDERS[state.keys.provider] || PROVIDERS.openai).name;
+    el.textContent = '● ' + provName + ' 연결됨';
     el.style.color = 'var(--ok)';
     el.style.borderColor = 'rgba(77,255,168,0.3)';
   } else {
@@ -718,23 +995,28 @@ function refreshApiStatus() {
     el.style.color = 'var(--text-2)';
     el.style.borderColor = 'var(--line)';
   }
-  $('#model-info').textContent = state.keys.model || 'gpt-4o-mini';
+  $('#model-info').textContent = state.keys.model || '-';
 }
 function saveKeys() {
   state.keys = {
+    provider: state.keys.provider || 'openai',
     openai: $('#key-openai').value.trim(),
     model: $('#key-model').value,
     base: $('#key-base').value.trim(),
-    image: $('#key-image').value.trim(),
-    tts: $('#key-tts').value.trim()
+    imageProvider: state.keys.imageProvider || 'dalle',
+    image: $('#key-image').value.trim()
   };
+  // base가 비어있으면 provider 기본값으로
+  if (!state.keys.base && PROVIDERS[state.keys.provider]) {
+    state.keys.base = PROVIDERS[state.keys.provider].base;
+  }
   saveLS(LS_KEYS, state.keys);
   refreshApiStatus();
   toast('API 키가 브라우저에 저장되었습니다', 'success');
 }
 function clearKeys() {
   if (!confirm('저장된 모든 API 키를 삭제하시겠습니까?')) return;
-  state.keys = { openai:'', model:'gpt-4o-mini', base:'', image:'', tts:'' };
+  state.keys = { provider:'openai', openai:'', model:'gpt-4o-mini', base:'', imageProvider:'dalle', image:'' };
   saveLS(LS_KEYS, state.keys);
   loadKeys();
   toast('키가 삭제되었습니다');
@@ -817,29 +1099,64 @@ function clearForm() {
   toast('초기화되었습니다');
 }
 
-/* ---------- OPENAI CALL ---------- */
+/* ---------- OPENAI/GROQ CALL ---------- */
 async function callOpenAI(messages, model) {
-  const base = (state.keys.base || 'https://api.openai.com/v1').replace(/\/$/, '');
+  const base = (state.keys.base || PROVIDERS[state.keys.provider || 'openai'].base || 'https://api.openai.com/v1').replace(/\/$/, '');
   const url = base + '/chat/completions';
-  const res = await fetch(url, {
+  const useModel = model || state.keys.model || 'gpt-4o-mini';
+
+  // 시도 1: response_format json_object (OpenAI / 일부 Groq 모델)
+  const body1 = {
+    model: useModel,
+    messages,
+    temperature: 0.85,
+    response_format: { type: 'json_object' }
+  };
+
+  let res = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + state.keys.openai
     },
-    body: JSON.stringify({
-      model: model || state.keys.model || 'gpt-4o-mini',
-      messages,
-      temperature: 0.85,
-      response_format: { type: 'json_object' }
-    })
+    body: JSON.stringify(body1)
   });
+
+  // response_format 미지원 모델이면 재시도 (fallback)
   if (!res.ok) {
-    const err = await res.text();
-    throw new Error('API 오류 (' + res.status + '): ' + err.slice(0, 200));
+    const errText = await res.text();
+    const isFormatError = /response_format|json_object|not supported/i.test(errText);
+    if (isFormatError) {
+      // JSON 강제 지시문을 마지막 메시지에 주입하고 재시도
+      const fallbackMessages = messages.map((m, i) => {
+        if (i === messages.length - 1) {
+          return { ...m, content: m.content + '\n\n반드시 유효한 JSON 객체로만 응답하세요. 다른 텍스트, 마크다운, 코드블록 절대 금지.' };
+        }
+        return m;
+      });
+      const body2 = { model: useModel, messages: fallbackMessages, temperature: 0.85 };
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + state.keys.openai
+        },
+        body: JSON.stringify(body2)
+      });
+      if (!res.ok) {
+        const e2 = await res.text();
+        throw new Error('API 오류 (' + res.status + '): ' + e2.slice(0, 200));
+      }
+    } else {
+      throw new Error('API 오류 (' + res.status + '): ' + errText.slice(0, 200));
+    }
   }
+
   const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  let content = data.choices?.[0]?.message?.content || '';
+  // 마크다운 코드블록 제거
+  content = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  return content;
 }
 
 function buildPrompt(form, prevEpisode) {
@@ -1166,6 +1483,457 @@ function triggerDownload(blob, name) {
   toast('다운로드 시작: ' + name, 'success');
 }
 
+/* ---------- PROVIDER PRESETS ---------- */
+const PROVIDERS = {
+  openai: {
+    name: 'OpenAI',
+    base: 'https://api.openai.com/v1',
+    models: [
+      { value: 'gpt-4o-mini', label: 'gpt-4o-mini (저렴, 빠름) ⭐ 추천' },
+      { value: 'gpt-4o', label: 'gpt-4o (고품질)' },
+      { value: 'gpt-4-turbo', label: 'gpt-4-turbo' },
+      { value: 'gpt-4.1', label: 'gpt-4.1' },
+      { value: 'gpt-4.1-mini', label: 'gpt-4.1-mini' }
+    ],
+    keyHelp: 'platform.openai.com 에서 발급 · sk-... 형식'
+  },
+  groq: {
+    name: 'Groq',
+    base: 'https://api.groq.com/openai/v1',
+    models: [
+      { value: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B (추천, 무료)' },
+      { value: 'llama-3.1-8b-instant', label: 'Llama 3.1 8B (초고속)' },
+      { value: 'mixtral-8x7b-32768', label: 'Mixtral 8x7B' },
+      { value: 'gemma2-9b-it', label: 'Gemma 2 9B' }
+    ],
+    keyHelp: 'console.groq.com 에서 발급 · gsk_... 형식 · 무료'
+  },
+  custom: {
+    name: '직접 설정',
+    base: '',
+    models: [
+      { value: 'gpt-4o-mini', label: 'gpt-4o-mini' },
+      { value: 'gpt-4o', label: 'gpt-4o' },
+      { value: 'llama-3.3-70b-versatile', label: 'llama-3.3-70b-versatile' }
+    ],
+    keyHelp: 'OpenAI 호환 API 라면 모두 사용 가능 (Together / Anyscale / 자체 배포 등)'
+  }
+};
+
+function applyProvider(providerKey) {
+  const p = PROVIDERS[providerKey] || PROVIDERS.openai;
+  state.keys.provider = providerKey;
+
+  // 모델 드롭다운 업데이트
+  const sel = $('#key-model');
+  sel.innerHTML = '';
+  p.models.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.value;
+    opt.textContent = m.label;
+    sel.appendChild(opt);
+  });
+  // 기존 모델이 새 목록에 있으면 유지, 없으면 첫 번째
+  if (state.keys.model && p.models.find(m => m.value === state.keys.model)) {
+    sel.value = state.keys.model;
+  } else {
+    sel.value = p.models[0].value;
+    state.keys.model = p.models[0].value;
+  }
+
+  // Base URL 자동 채우기 (custom이 아니면)
+  if (providerKey !== 'custom') {
+    $('#key-base').value = p.base;
+    state.keys.base = p.base;
+  }
+
+  // 도움말 업데이트
+  $('#provider-help').textContent = p.keyHelp;
+
+  // 칩 active 동기화
+  $$('.chip', $('#g-provider')).forEach(c => c.classList.toggle('active', c.dataset.val === providerKey));
+}
+
+function detectProviderFromKey(key) {
+  if (!key) return 'openai';
+  if (key.startsWith('gsk_')) return 'groq';
+  if (key.startsWith('sk-')) return 'openai';
+  return 'custom';
+}
+
+/* ---------- IMAGE PROVIDER ---------- */
+const IMAGE_HELPS = {
+  dalle: 'DALL·E 3는 위에 입력한 OpenAI 키를 그대로 사용합니다. 별도 입력 불필요. (Groq 사용자는 OpenAI 키 별도 필요)',
+  stability: 'Stability AI는 사실적 인물 렌더링이 강합니다. platform.stability.ai 에서 발급.',
+  pollinations: '완전 무료, 키 없음. 품질은 위 두 옵션보다 낮지만 무제한 사용 가능합니다.'
+};
+function applyImageProvider(key) {
+  state.keys.imageProvider = key;
+  $('#image-help').textContent = IMAGE_HELPS[key] || '';
+  $('#image-key-wrap').style.display = key === 'stability' ? 'block' : 'none';
+  $$('.chip', $('#g-image-provider')).forEach(c => c.classList.toggle('active', c.dataset.val === key));
+}
+
+/* ---------- TRENDING TEMPLATES (100개, GPT 호출 없음) ---------- */
+const TEMPLATES = [
+  // === 드라마/반전 (20) ===
+  { cat: 'drama', title: '5초 전 메시지', topic: '죽기 5초 전 휴대폰에 도착한 마지막 메시지의 발신인이 본인이었다', character: '20대 여성, 흐트러진 머리, 충격받은 표정', target: '20-30대 미스터리 팬', revenue: '시리즈 락인형' },
+  { cat: 'drama', title: '엘리베이터 13층', topic: '12층까지밖에 없는 건물의 엘리베이터에 13층 버튼이 생겼다', character: '회사원, 정장, 의심스러운 눈빛', target: '도시괴담 팬', revenue: '시리즈 시즌제' },
+  { cat: 'drama', title: '거울 속 1초', topic: '거울 속 내가 나보다 1초 빨리 움직이기 시작했다', character: '평범한 대학생, 두려움', target: '심리 스릴러 팬', revenue: '시리즈 락인' },
+  { cat: 'drama', title: '잘못 걸린 전화', topic: '모르는 번호로 걸려온 전화에서 내 목소리가 들렸다', character: '직장인, 출근길', target: '미스터리 마니아', revenue: '에피소드형 락인' },
+  { cat: 'drama', title: '편의점 새벽 3시', topic: '매일 새벽 3시에 같은 손님이 같은 물건만 사간다', character: '편의점 알바생, 졸린 눈', target: '괴담 콘텐츠 팬', revenue: '시리즈형' },
+  { cat: 'drama', title: '동창회 빈자리', topic: '20년 만의 동창회, 모두가 빈자리를 보며 그 친구를 그리워하지만 사실 그 친구는 존재한 적이 없다', character: '40대 회사원', target: '드라마 시청자', revenue: '시리즈 락인' },
+  { cat: 'drama', title: '내가 쓴 일기', topic: '한 번도 쓴 적 없는 내 일기장에 오늘 일이 미리 적혀있었다', character: '고등학생, 교복', target: '학생 시청자', revenue: '시즌제' },
+  { cat: 'drama', title: '택시 미터기', topic: '택시 미터기가 거꾸로 돌아가기 시작했다', character: '40대 남성 승객', target: '심야 콘텐츠 팬', revenue: '에피소드형' },
+  { cat: 'drama', title: '같은 꿈', topic: '한 번도 만난 적 없는 사람과 매일 밤 같은 꿈에서 만난다', character: '몽환적 분위기의 인물', target: '로맨틱 미스터리 팬', revenue: '시리즈 락인' },
+  { cat: 'drama', title: '없는 층수', topic: '내가 사는 아파트 1003호인데, 10층에는 1001호와 1002호밖에 없다', character: '이사 온 30대', target: '도시괴담 팬', revenue: '시리즈형' },
+  { cat: 'drama', title: '오래된 사진', topic: '할머니 유품에서 나온 사진 속에 내가 있었다, 그런데 그 사진은 100년 전 사진이다', character: '20대 손녀', target: '미스터리 팬', revenue: '시즌제' },
+  { cat: 'drama', title: '돌아오지 않는 우산', topic: '비 오는 날 빌려준 우산을 돌려주러 온 사람이 30년 전에 죽은 친구였다', character: '50대 중년', target: '감성 미스터리', revenue: '단편형' },
+  { cat: 'drama', title: '전 여친의 결혼식', topic: '전 여친 결혼식에 갔는데 신랑이 나였다', character: '30대 남성', target: '드라마 팬', revenue: '시리즈 락인' },
+  { cat: 'drama', title: '입양된 형', topic: '20년 만에 만난 친형이 사실 내가 어릴 때 만들어낸 상상의 친구였다', character: '20대 남성', target: '심리 드라마 팬', revenue: '시리즈형' },
+  { cat: 'drama', title: '같은 시간의 약속', topic: '매주 같은 시간에 만나기로 한 사람이, 사실 매번 다른 사람이었다', character: '카페에서 기다리는 여성', target: '로맨스 미스터리', revenue: '시즌제' },
+  { cat: 'drama', title: '잃어버린 하루', topic: '아무 기억도 없는 하루의 CCTV에서 내가 누군가를 만나고 있었다', character: '의심하는 표정의 인물', target: '스릴러 팬', revenue: '시리즈 락인' },
+  { cat: 'drama', title: '장례식 부고', topic: '내 장례식 부고를 받았다. 발인은 내일이다', character: '평범한 직장인', target: '미스터리 마니아', revenue: '시리즈형' },
+  { cat: 'drama', title: '2층의 발소리', topic: '단층집인데 2층에서 발소리가 들린다', character: '혼자 사는 여성', target: '공포 미스터리', revenue: '에피소드형' },
+  { cat: 'drama', title: '20년 후 답장', topic: '20년 전에 보낸 편지의 답장이 오늘 도착했다', character: '40대 중년', target: '감성 드라마 팬', revenue: '단편형' },
+  { cat: 'drama', title: '한 명의 다른 이름', topic: '내가 아는 모든 사람이 같은 사람을 다른 이름으로 부르고 있었다', character: '의심하는 청년', target: '미스터리 팬', revenue: '시리즈 락인' },
+
+  // === 공포/스릴러 (15) ===
+  { cat: 'horror', title: '문 두드리는 소리', topic: '새벽 3시 33분, 매일 정확히 7번 문을 두드리는 소리가 들린다', character: '혼자 사는 20대 여성', target: '공포 콘텐츠 팬', revenue: '시리즈 락인' },
+  { cat: 'horror', title: '거울 닫지 마세요', topic: '이사 온 집의 모든 거울에 "닫지 마세요"라고 적혀있다', character: '신혼부부', target: '호러 팬', revenue: '시즌제' },
+  { cat: 'horror', title: '13명의 단톡방', topic: '12명만 있는 단톡방에 13명째 메시지가 올라왔다', character: '대학생 그룹', target: '학생 호러 팬', revenue: '에피소드형' },
+  { cat: 'horror', title: '엘리베이터 게임', topic: '실수로 엘리베이터 게임을 끝까지 해버렸다', character: '호기심 많은 20대', target: '괴담 팬', revenue: '시리즈형' },
+  { cat: 'horror', title: '가족사진 한 명', topic: '오래된 가족사진에 모르는 사람이 한 명 더 있다, 그리고 매일 그 사람이 나에게 가까워진다', character: '평범한 가정 구성원', target: '공포 마니아', revenue: '시리즈 락인' },
+  { cat: 'horror', title: '말 거는 인형', topic: '버린 인형이 매일 밤 집 앞에 돌아와 있다', character: '아이를 둔 엄마', target: '심야 호러 팬', revenue: '에피소드형' },
+  { cat: 'horror', title: '없어진 그림자', topic: '어느 날부터 내 그림자가 사라졌다', character: '평범한 회사원', target: '심리 호러 팬', revenue: '시즌제' },
+  { cat: 'horror', title: '다음 정류장', topic: '버스 안내방송이 내 이름을 부르며 다음 정류장이라고 한다', character: '심야 버스 승객', target: '괴담 콘텐츠 팬', revenue: '단편형' },
+  { cat: 'horror', title: '같은 옷의 여자', topic: '출근길에 본 여자가 회사 엘리베이터, 화장실, 카페에서 계속 보인다, 옷도 똑같다', character: '직장인 여성', target: '스릴러 팬', revenue: '시리즈 락인' },
+  { cat: 'horror', title: '아이의 그림', topic: '5살 딸이 그린 그림에 우리집 베란다에 매달린 사람이 있다', character: '엄마', target: '가족 호러 팬', revenue: '시리즈형' },
+  { cat: 'horror', title: '사라진 친구', topic: '같이 여행 간 친구를 모두가 처음부터 없었다고 한다', character: '여행객', target: '호러 마니아', revenue: '시즌제' },
+  { cat: 'horror', title: '복도 끝의 문', topic: '오피스텔 복도 끝에 어제까지 없던 문이 생겼다', character: '오피스텔 거주자', target: '도시괴담 팬', revenue: '에피소드형' },
+  { cat: 'horror', title: '꿈에서 본 사람', topic: '꿈에서 본 사람이 다음 날 길에서 나를 알아본다', character: '평범한 학생', target: '심리 호러 팬', revenue: '시리즈 락인' },
+  { cat: 'horror', title: '삭제된 사진', topic: '갤러리에 모르는 사진이 매일 한 장씩 추가된다, 사진 속은 전부 우리집 천장이다', character: '혼자 사는 사람', target: '공포 콘텐츠 팬', revenue: '시리즈형' },
+  { cat: 'horror', title: '문자로 온 경고', topic: '"오늘 밤 거울 보지 마세요"라는 문자가 모르는 번호로 왔다', character: '20대 여성', target: '공포 마니아', revenue: '단편형' },
+
+  // === 웃긴/B급 (15) ===
+  { cat: 'funny', title: '회식 자리에서', topic: '회식 자리에서 부장님 옆에 앉기 싫어서 한 거짓말이 점점 커진다', character: '신입사원', target: '직장인', revenue: '광고 친화 콘텐츠' },
+  { cat: 'funny', title: '월요일 출근길', topic: '월요일에 알람이 안 울려서 시작된 최악의 하루', character: '직장인', target: '20-30대 직장인', revenue: '브랜디드 콘텐츠' },
+  { cat: 'funny', title: 'AI 면접관', topic: 'AI 면접관이 내 이력서를 보고 웃기 시작했다', character: '취준생', target: '취준생', revenue: '취업 서비스 광고' },
+  { cat: 'funny', title: '엄마의 카톡', topic: '엄마가 처음으로 카톡 이모티콘을 보내기 시작했다', character: '20-30대 자녀', target: '가족 콘텐츠 팬', revenue: '광고 친화' },
+  { cat: 'funny', title: '편의점 라면', topic: '편의점에서 라면 끓이는데 인생을 깨달았다', character: '대학생', target: '학생', revenue: '식품 브랜디드' },
+  { cat: 'funny', title: '소개팅 망함', topic: '소개팅 자리에서 화장실 갔다가 길을 잃었다', character: '20대 남녀', target: '20대', revenue: '데이팅 앱 광고' },
+  { cat: 'funny', title: '운동 다짐', topic: '연초 운동 다짐 100일째, 헬스장에 처음 갔다', character: '의지박약 30대', target: '직장인', revenue: '헬스 PPL' },
+  { cat: 'funny', title: '강아지 통역기', topic: '강아지 언어 통역기를 샀는데 내 욕을 하고 있었다', character: '반려인', target: '펫 시장', revenue: '펫 용품 광고' },
+  { cat: 'funny', title: '집들이 망함', topic: '집들이 초대했는데 친구들이 우리집 와이파이 비번만 받고 떠났다', character: '신혼부부', target: '20-30대', revenue: '브랜디드 콘텐츠' },
+  { cat: 'funny', title: '교수님의 메일', topic: '교수님이 보낸 메일에 "ㅋㅋㅋㅋㅋ"가 들어있었다', character: '대학생', target: '대학생', revenue: '광고 친화' },
+  { cat: 'funny', title: '배민 리뷰', topic: '배민 리뷰에 사장님이 답글로 시를 쓰기 시작했다', character: '단골 손님', target: '배달 앱 사용자', revenue: '배달 앱 광고' },
+  { cat: 'funny', title: '자동차 네비', topic: '네비게이션이 갑자기 친구처럼 말하기 시작했다', character: '운전자', target: '운전자', revenue: '자동차 PPL' },
+  { cat: 'funny', title: '엄마의 헬스', topic: '엄마가 헬스장 등록한 후 우리 가족이 망가졌다', character: '가족', target: '가족 시청자', revenue: '브랜디드' },
+  { cat: 'funny', title: '편의점 알바', topic: '편의점 알바 첫날, 모든 손님이 사장님이었다', character: '대학생 알바', target: '학생', revenue: '광고 친화' },
+  { cat: 'funny', title: '오토바이 배달', topic: '배달 첫날, 음식 들고 7층 계단 올라갔는데 빈집이었다', character: '배달 알바', target: '20-30대', revenue: '배달 앱 광고' },
+
+  // === 감성/힐링 (15) ===
+  { cat: 'emotion', title: '엄마의 손', topic: '엄마가 처음으로 내 손을 잡지 못하게 된 날', character: '40대 자녀와 노모', target: '중년 시청자', revenue: '시리즈 감동형' },
+  { cat: 'emotion', title: '20년 만의 답장', topic: '20년 전 첫사랑에게 답장을 받았다', character: '40대 직장인', target: '중년', revenue: '광고 친화' },
+  { cat: 'emotion', title: '강아지의 마지막', topic: '15살 강아지가 마지막으로 산책 가고 싶어 했다', character: '반려인', target: '펫 시장', revenue: '펫 추모 콘텐츠' },
+  { cat: 'emotion', title: '아빠의 일기장', topic: '돌아가신 아빠의 일기장 첫 페이지에 내 이름이 적혀있었다', character: '30-40대 자녀', target: '가족 시청자', revenue: '단편 감동형' },
+  { cat: 'emotion', title: '편지의 답장', topic: '돌아가신 할머니에게 매년 편지를 쓰던 손녀가 답장을 받았다', character: '20대 손녀', target: '여성 시청자', revenue: '시리즈 감동형' },
+  { cat: 'emotion', title: '졸업식 빈자리', topic: '졸업식 객석에 올 수 없었던 사람을 위해 자리 하나를 비워뒀다', character: '졸업생', target: '학생/학부모', revenue: '광고 친화' },
+  { cat: 'emotion', title: '아빠의 첫 카톡', topic: '한 번도 카톡을 안 보내던 아빠가 처음 보낸 메시지', character: '30대 자녀', target: '30-40대', revenue: '통신사 광고' },
+  { cat: 'emotion', title: '오래된 사진첩', topic: '먼지 쌓인 사진첩에서 발견한 잊고 있던 친구', character: '30대 직장인', target: '30-40대', revenue: '단편 감동형' },
+  { cat: 'emotion', title: '엄마의 도시락', topic: '독립한 후 처음으로 다시 받은 엄마 도시락', character: '20-30대 사회초년생', target: '청년층', revenue: '식품 광고' },
+  { cat: 'emotion', title: '버스 정류장', topic: '매일 같은 시간 버스 정류장에서 마주치던 할아버지가 사라졌다', character: '직장인', target: '시민 시청자', revenue: '광고 친화' },
+  { cat: 'emotion', title: '낡은 라디오', topic: '라디오에서 흘러나온 노래가 30년 전 그 사람의 신청곡이었다', character: '50대 중년', target: '중장년', revenue: '브랜디드' },
+  { cat: 'emotion', title: '동생의 결혼', topic: '결혼하는 동생의 손을 잡고 입장하게 된 형', character: '30대 형제', target: '가족 시청자', revenue: '예식장 광고' },
+  { cat: 'emotion', title: '입원실 창가', topic: '입원실 창가에서 매일 같은 시간 손을 흔들던 사람의 정체', character: '환자', target: '감성 콘텐츠 팬', revenue: '시리즈 감동형' },
+  { cat: 'emotion', title: '오래된 곰인형', topic: '버리려던 곰인형 안에서 어릴 적 내 편지가 나왔다', character: '20대', target: '여성', revenue: '광고 친화' },
+  { cat: 'emotion', title: '아빠의 노래', topic: '아빠가 평생 흥얼거리던 노래의 진짜 의미를 알게 된 날', character: '30-40대 자녀', target: '중년', revenue: '단편 감동형' },
+
+  // === 정보성/리뷰 (제휴 마케팅 가능) (20) ===
+  { cat: 'info', title: '아이폰 숨은 기능 5가지', topic: '99%가 모르는 아이폰 숨겨진 기능 5가지', character: 'IT 리뷰어', target: '아이폰 사용자', revenue: '쿠팡 파트너스 (아이폰 액세서리)' },
+  { cat: 'info', title: '편의점 꿀템', topic: '편의점에서 진짜 가성비 좋은 꿀템 5가지', character: '리뷰어', target: '20-30대', revenue: '쿠팡 파트너스 (식품)' },
+  { cat: 'info', title: '직장인 꿀팁', topic: '직장인이 모르면 손해보는 연말정산 꿀팁', character: '직장인 인플루언서', target: '직장인', revenue: '금융 광고' },
+  { cat: 'info', title: '다이어트 진실', topic: '의사가 말하는 다이어트 보조제의 진실', character: '의사 캐릭터', target: '다이어터', revenue: '쿠팡 파트너스 (건강식품)' },
+  { cat: 'info', title: '노트북 추천', topic: '대학생 가성비 노트북 BEST 3', character: 'IT 리뷰어', target: '대학생/학부모', revenue: '쿠팡 파트너스 (전자제품)' },
+  { cat: 'info', title: '주방 꿀템', topic: '한 번 사면 평생 쓰는 주방 꿀템 5가지', character: '주부 리뷰어', target: '주부', revenue: '쿠팡 파트너스 (주방용품)' },
+  { cat: 'info', title: '캠핑 필수템', topic: '캠핑 초보가 진짜 사야 할 필수템', character: '캠퍼', target: '캠핑 입문자', revenue: '쿠팡 파트너스 (캠핑용품)' },
+  { cat: 'info', title: '운동 꿀팁', topic: '헬스 1년차도 모르는 운동 효율 200% 꿀팁', character: '트레이너', target: '운동인', revenue: '쿠팡 파트너스 (헬스용품)' },
+  { cat: 'info', title: '청소 노하우', topic: '청소 도우미가 알려주는 진짜 청소 노하우', character: '청소 전문가', target: '주부/자취생', revenue: '쿠팡 파트너스 (청소용품)' },
+  { cat: 'info', title: '재테크 입문', topic: '주식 1주도 안 사본 사람을 위한 첫 재테크', character: '경제 인플루언서', target: '20-30대', revenue: '증권사 광고' },
+  { cat: 'info', title: '여행 가방', topic: '여행 고수만 아는 가방 싸는 법', character: '여행 블로거', target: '여행객', revenue: '쿠팡 파트너스 (여행용품)' },
+  { cat: 'info', title: '셀프 인테리어', topic: '10만원으로 방 분위기 완전히 바꾸는 법', character: '인테리어 인플루언서', target: '자취생', revenue: '쿠팡 파트너스 (인테리어)' },
+  { cat: 'info', title: '강아지 사료', topic: '수의사가 말하는 진짜 좋은 강아지 사료 고르는 법', character: '수의사', target: '반려인', revenue: '쿠팡 파트너스 (펫푸드)' },
+  { cat: 'info', title: '피부과 의사', topic: '피부과 의사가 절대 안 사는 화장품 성분', character: '의사', target: '여성 시청자', revenue: '쿠팡 파트너스 (화장품)' },
+  { cat: 'info', title: '면접 꿀팁', topic: '대기업 면접관이 본 합격하는 사람의 공통점', character: '면접관', target: '취준생', revenue: '취업 서비스 광고' },
+  { cat: 'info', title: '집밥 레시피', topic: '자취생이 5분만에 만드는 집밥 레시피', character: '자취 요리 인플루언서', target: '자취생', revenue: '쿠팡 파트너스 (식재료)' },
+  { cat: 'info', title: '아이패드 활용', topic: '아이패드 산 사람이 꼭 깔아야 할 앱 5개', character: 'IT 인플루언서', target: '아이패드 유저', revenue: '쿠팡 파트너스 (액세서리)' },
+  { cat: 'info', title: '독서 습관', topic: '책 한 권도 못 읽던 사람이 한 달 10권 읽게 된 방법', character: '독서가', target: '자기계발', revenue: '도서/굿즈 광고' },
+  { cat: 'info', title: '아침 루틴', topic: '성공한 사람들의 아침 루틴 공통점 5가지', character: '자기계발 인플루언서', target: '직장인', revenue: '커피/굿즈 광고' },
+  { cat: 'info', title: '커피 꿀팁', topic: '카페 사장이 알려주는 집에서 카페 맛 내는 법', character: '바리스타', target: '커피 애호가', revenue: '쿠팡 파트너스 (커피용품)' },
+
+  // === 글로벌 타겟 (해외 시청자용) (15) ===
+  { cat: 'global', title: 'Korean Mom Style', topic: '한국 엄마 vs 외국 엄마 차이를 외국인 입장에서 보여주기', character: '한국인 엄마', target: '해외 K-콘텐츠 팬', revenue: '글로벌 광고 / 영어 자막 채널' },
+  { cat: 'global', title: '한국 학교 점심', topic: '외국인이 충격받는 한국 학교 급식', character: '한국 학생', target: '해외 K-팬', revenue: '글로벌 채널 광고' },
+  { cat: 'global', title: '한국 편의점 투어', topic: '외국인 시점에서 본 한국 편의점의 천국 같은 모습', character: '외국인 캐릭터', target: '해외 시청자', revenue: '관광청 협업' },
+  { cat: 'global', title: '한국 미용실', topic: '한국 미용실 가본 외국인의 충격', character: '외국인', target: 'K뷰티 팬', revenue: 'K뷰티 브랜드 광고' },
+  { cat: 'global', title: '한국 카페 문화', topic: '한국 카페에서 6시간 공부하는 게 가능한 이유', character: '카공족', target: '해외 학생', revenue: '글로벌 광고' },
+  { cat: 'global', title: 'K-드라마 클리셰', topic: 'K-드라마에 매번 나오는 클리셰 5가지', character: '드라마 분석가', target: '해외 K드라마 팬', revenue: 'OTT 광고' },
+  { cat: 'global', title: '한국 지하철', topic: '외국인이 한국 지하철 처음 타고 충격받은 것', character: '외국인 관광객', target: '예비 한국 관광객', revenue: '관광청/교통카드 광고' },
+  { cat: 'global', title: '한국 배달 문화', topic: '외국인이 믿지 못하는 한국 배달 속도', character: '외국인', target: '해외 시청자', revenue: '배달 앱 글로벌 광고' },
+  { cat: 'global', title: '한국 어른들의 말', topic: '한국 시댁/처가 관계를 외국인이 이해 못 하는 이유', character: '국제 커플', target: '해외 K-팬', revenue: '글로벌 콘텐츠' },
+  { cat: 'global', title: 'PC방 문화', topic: '한국 PC방의 음식과 시설에 외국인이 놀라는 이유', character: '외국인 게이머', target: '해외 게이머', revenue: '게임/굿즈 광고' },
+  { cat: 'global', title: '한국 화장품', topic: '한국 화장품 매장에서 외국인이 가장 많이 사가는 것', character: '뷰티 리뷰어', target: 'K뷰티 팬', revenue: 'K뷰티 글로벌 광고' },
+  { cat: 'global', title: '서울 야경', topic: '외국인이 서울 야경을 보고 우는 이유', character: '여행자', target: '해외 여행객', revenue: '관광청 협업' },
+  { cat: 'global', title: '한국 시험 문화', topic: '수능 날 비행기까지 멈추는 한국이 외국인에게 미친 나라인 이유', character: '학생', target: '해외 시청자', revenue: '글로벌 광고' },
+  { cat: 'global', title: '치킨과 맥주', topic: '한국에서 치맥이 단순한 음식이 아닌 이유', character: '치맥 마니아', target: '해외 K-푸드 팬', revenue: '치킨/맥주 광고' },
+  { cat: 'global', title: '한국 찜질방', topic: '외국인이 처음 찜질방 가서 겪은 문화 충격', character: '외국인', target: '해외 시청자', revenue: '관광 콘텐츠' }
+];
+
+function openTemplateModal() {
+  const bg = $('#idea-modal-bg');
+  $('#idea-title').textContent = '📚 트렌딩 템플릿';
+  $('#idea-sub').textContent = '미리 큐레이션된 100개 템플릿 (GPT 호출 안 함, 무료, 즉시)';
+  $('#idea-keyword-input').style.display = 'none';
+  $('#idea-template-filter').style.display = 'block';
+  bg.classList.add('open');
+  state.templateCat = 'all';
+  $$('.chip', $('#g-template-cat')).forEach(c => c.classList.toggle('active', c.dataset.val === 'all'));
+  renderTemplates();
+}
+
+function renderTemplates() {
+  const cat = state.templateCat || 'all';
+  const filtered = cat === 'all' ? TEMPLATES : TEMPLATES.filter(t => t.cat === cat);
+  // 카테고리 안에서 랜덤 셔플 후 8개만 (전체일 때는 12개)
+  const shuffled = filtered.slice().sort(() => Math.random() - 0.5);
+  const limit = cat === 'all' ? 12 : 8;
+  const picked = shuffled.slice(0, limit);
+
+  if (picked.length === 0) {
+    $('#idea-content').innerHTML = '<div class="idea-empty">해당 카테고리에 템플릿이 없습니다</div>';
+    return;
+  }
+
+  // renderIdeas와 같은 형식으로 변환
+  const ideas = picked.map(t => ({
+    title: t.title,
+    topic: t.topic,
+    character: t.character,
+    target: t.target,
+    revenue_frame: t.revenue
+  }));
+  renderIdeas(ideas);
+}
+
+/* ---------- IDEA HELPER (주제 추천 + 키워드 확장) ---------- */
+function openIdeaModal(mode) {
+  const bg = $('#idea-modal-bg');
+  const title = $('#idea-title');
+  const sub = $('#idea-sub');
+  const keywordWrap = $('#idea-keyword-input');
+  const templateWrap = $('#idea-template-filter');
+  const content = $('#idea-content');
+
+  // 모든 모드 영역 일단 숨김
+  keywordWrap.style.display = 'none';
+  templateWrap.style.display = 'none';
+
+  if (mode === 'recommend') {
+    title.textContent = '🎲 주제 추천';
+    sub.textContent = '현재 선택한 스타일/분위기/플랫폼 + 수익 프레임이 적용된 5개 추천';
+    content.innerHTML = '<div class="idea-empty">잠시만 기다려주세요...</div>';
+    bg.classList.add('open');
+    fetchRecommendations();
+  } else if (mode === 'keyword') {
+    title.textContent = '✨ 키워드로 시놉시스 만들기';
+    sub.textContent = '한 단어만 입력하면 AI가 완전한 시리즈 기획으로 확장합니다';
+    keywordWrap.style.display = 'block';
+    content.innerHTML = '<div class="idea-empty">키워드를 입력하고 [생성] 버튼을 누르세요</div>';
+    bg.classList.add('open');
+    setTimeout(() => $('#keyword-input-field').focus(), 100);
+  }
+}
+
+function closeIdeaModal() {
+  $('#idea-modal-bg').classList.remove('open');
+}
+
+async function fetchRecommendations() {
+  if (!state.keys.openai) {
+    $('#idea-content').innerHTML = '<div class="idea-empty" style="color:var(--danger);">먼저 OpenAI API 키를 등록하세요</div>';
+    setTimeout(() => { closeIdeaModal(); setView('apikeys'); }, 1500);
+    return;
+  }
+
+  $('#idea-content').innerHTML = `
+    <div class="idea-loading">
+      <div class="big-spinner"></div>
+      <div>GPT가 5가지 아이디어를 구상 중입니다...</div>
+    </div>
+  `;
+
+  const sys = `당신은 한국어 숏폼 영상 기획 전문가입니다. 단순 아이디어 나열이 아니라, 각 아이디어마다 "누구를 타겟으로 할 때 어떤 수익 구조가 가능한가"까지 같이 제안하세요.
+
+출력은 반드시 아래 JSON 스키마를 따르세요 (다른 텍스트 절대 금지):
+
+{
+  "ideas": [
+    {
+      "title": "시리즈 제목 (짧고 임팩트 있게)",
+      "topic": "주제/시놉시스 (2~3문장, 구체적으로)",
+      "character": "캐릭터 키워드 (외형, 분위기 등)",
+      "target": "타겟 시청자 (예: 20대 여성 / 해외 한국 콘텐츠 팬 / 직장인 등)",
+      "revenue_frame": "수익화 방식 (예: 시리즈 구독 락인 / 쿠팡 파트너스 상품 훅 / 영어 자막으로 글로벌 타겟 / 정보성 채널 광고 / 캐릭터 굿즈)"
+    },
+    ... (총 5개)
+  ]
+}
+
+규칙:
+- 5개 모두 서로 다른 컨셉이어야 함 (중복 절대 금지)
+- 5개 중 최소 1개는 "글로벌/해외 타겟"
+- 5개 중 최소 1개는 "쿠팡 파트너스 등 제휴 마케팅 연동 가능한" 정보성/리뷰성 컨셉
+- 5개 중 최소 1개는 "시리즈 락인 가능한" 드라마형
+- 진부한 클리셰 피하고, 후킹 강한 컨셉 위주`;
+
+  const user = `스타일: ${state.form.style}
+분위기: ${state.form.mood}
+영상 길이: ${state.form.length}초
+플랫폼: ${state.form.platform}
+
+위 조건에 맞는 시리즈 아이디어 5개를 추천하세요.`;
+
+  try {
+    const raw = await callOpenAI([
+      { role: 'system', content: sys },
+      { role: 'user', content: user }
+    ]);
+    let parsed;
+    try { parsed = JSON.parse(raw); }
+    catch {
+      const m = raw.match(/\{[\s\S]*\}/);
+      if (!m) throw new Error('JSON 파싱 실패');
+      parsed = JSON.parse(m[0]);
+    }
+    if (!parsed.ideas || !Array.isArray(parsed.ideas) || parsed.ideas.length === 0) {
+      throw new Error('아이디어가 생성되지 않았습니다');
+    }
+    renderIdeas(parsed.ideas);
+  } catch (e) {
+    console.error(e);
+    $('#idea-content').innerHTML = `<div class="idea-empty" style="color:var(--danger);">생성 실패: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+async function fetchKeywordExpansion() {
+  if (!state.keys.openai) {
+    toast('먼저 OpenAI API 키를 등록하세요', 'error');
+    closeIdeaModal();
+    setView('apikeys');
+    return;
+  }
+  const keyword = $('#keyword-input-field').value.trim();
+  if (!keyword) {
+    toast('키워드를 입력하세요', 'error');
+    return;
+  }
+
+  $('#idea-content').innerHTML = `
+    <div class="idea-loading">
+      <div class="big-spinner"></div>
+      <div>"${escapeHtml(keyword)}" 키워드를 시놉시스로 확장 중...</div>
+    </div>
+  `;
+
+  const sys = `당신은 한국어 숏폼 영상 기획 전문가입니다. 사용자가 던진 키워드 한 단어를, 완전한 시리즈 기획 3가지로 확장하세요. 각 기획은 서로 다른 각도에서 접근해야 하며, 수익 프레임까지 포함해야 합니다.
+
+출력은 반드시 아래 JSON 스키마를 따르세요 (다른 텍스트 절대 금지):
+
+{
+  "ideas": [
+    {
+      "title": "시리즈 제목",
+      "topic": "주제/시놉시스 (2~3문장, 구체적으로)",
+      "character": "캐릭터 키워드",
+      "target": "타겟 시청자",
+      "revenue_frame": "수익화 방식 (구체적으로)"
+    },
+    ... (총 3개, 각각 다른 각도)
+  ]
+}
+
+규칙:
+- 3개는 서로 완전히 다른 접근이어야 함 (예: 1개는 드라마형, 1개는 정보성, 1개는 글로벌 타겟)
+- 진부한 첫 번째 떠오르는 것 말고, 의외의 각도 우선
+- 후킹이 강해야 함`;
+
+  const user = `키워드: ${keyword}
+스타일: ${state.form.style}
+분위기: ${state.form.mood}
+영상 길이: ${state.form.length}초
+플랫폼: ${state.form.platform}
+
+위 키워드로 서로 다른 3가지 시리즈 기획을 제안하세요.`;
+
+  try {
+    const raw = await callOpenAI([
+      { role: 'system', content: sys },
+      { role: 'user', content: user }
+    ]);
+    let parsed;
+    try { parsed = JSON.parse(raw); }
+    catch {
+      const m = raw.match(/\{[\s\S]*\}/);
+      if (!m) throw new Error('JSON 파싱 실패');
+      parsed = JSON.parse(m[0]);
+    }
+    if (!parsed.ideas || !Array.isArray(parsed.ideas) || parsed.ideas.length === 0) {
+      throw new Error('아이디어가 생성되지 않았습니다');
+    }
+    renderIdeas(parsed.ideas);
+  } catch (e) {
+    console.error(e);
+    $('#idea-content').innerHTML = `<div class="idea-empty" style="color:var(--danger);">생성 실패: ${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderIdeas(ideas) {
+  const list = document.createElement('div');
+  list.className = 'idea-list';
+  ideas.forEach((idea, idx) => {
+    const item = document.createElement('div');
+    item.className = 'idea-item';
+    item.innerHTML = `
+      <div class="title">${escapeHtml(idea.title || '제목 없음')}</div>
+      <div class="topic">${escapeHtml(idea.topic || '')}</div>
+      ${idea.character ? `<div class="character">캐릭터: ${escapeHtml(idea.character)}</div>` : ''}
+      <div class="meta">
+        ${idea.target ? `<span class="meta-tag target">🎯 ${escapeHtml(idea.target)}</span>` : ''}
+        ${idea.revenue_frame ? `<span class="meta-tag revenue">💰 ${escapeHtml(idea.revenue_frame)}</span>` : ''}
+      </div>
+      <div class="use-btn">✓ 이 아이디어로 채우기</div>
+    `;
+    item.addEventListener('click', () => useIdea(idea));
+    list.appendChild(item);
+  });
+  const content = $('#idea-content');
+  content.innerHTML = '';
+  content.appendChild(list);
+}
+
+function useIdea(idea) {
+  state.form.title = idea.title || '';
+  state.form.topic = idea.topic || '';
+  state.form.character = idea.character || '';
+  $('#f-title').value = state.form.title;
+  $('#f-topic').value = state.form.topic;
+  $('#f-character').value = state.form.character;
+  closeIdeaModal();
+  toast('아이디어가 입력란에 채워졌습니다 ✓', 'success');
+  // 화면 위로 스크롤
+  $('#f-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 /* ---------- INIT ---------- */
 async function init() {
   const user = await requireLogin();
@@ -1202,6 +1970,57 @@ async function init() {
     if (!state.result) return;
     state.currentScene = (state.currentScene + 1) % 4;
     renderResult();
+  });
+
+  // 아이디어 헬퍼
+  $('#btn-idea-recommend').addEventListener('click', () => openIdeaModal('recommend'));
+  $('#btn-idea-keyword').addEventListener('click', () => openIdeaModal('keyword'));
+  $('#btn-idea-template').addEventListener('click', openTemplateModal);
+  $('#idea-close').addEventListener('click', closeIdeaModal);
+  $('#idea-modal-bg').addEventListener('click', (e) => {
+    if (e.target.id === 'idea-modal-bg') closeIdeaModal();
+  });
+  $('#btn-keyword-go').addEventListener('click', fetchKeywordExpansion);
+  $('#keyword-input-field').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') fetchKeywordExpansion();
+  });
+
+  // 템플릿 카테고리 칩
+  $('#g-template-cat').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    $$('.chip', $('#g-template-cat')).forEach(c => c.classList.remove('active'));
+    b.classList.add('active');
+    state.templateCat = b.dataset.val;
+    renderTemplates();
+  });
+
+  // 제공자 칩 (OpenAI / Groq / Custom)
+  $('#g-provider').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    applyProvider(b.dataset.val);
+  });
+
+  // 이미지 제공자 칩
+  $('#g-image-provider').addEventListener('click', (e) => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    applyImageProvider(b.dataset.val);
+  });
+
+  // OpenAI 키 입력 시 자동 provider 감지
+  $('#key-openai').addEventListener('input', (e) => {
+    const detected = detectProviderFromKey(e.target.value);
+    if (detected !== state.keys.provider && (e.target.value.startsWith('sk-') || e.target.value.startsWith('gsk_'))) {
+      applyProvider(detected);
+      toast(detected === 'groq' ? 'Groq 키 감지됨 — 자동 설정' : 'OpenAI 키 감지됨 — 자동 설정', 'info');
+    }
+  });
+
+  // 모델 변경 시 state 동기화
+  $('#key-model').addEventListener('change', (e) => {
+    state.keys.model = e.target.value;
   });
 
   // 첫 방문 예시 자동 채우기
