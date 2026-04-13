@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>관리자 — ShortsForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/common.css">
+<style>
+  .admin-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 36px 60px;
+  }
+  @media (max-width: 720px) { .admin-wrap { padding: 20px 16px 40px; } }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .topbar h1 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .topbar h1 .accent { color: var(--accent); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 720px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .stat-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    font-weight: 600;
+  }
+  .stat-card .value {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .stat-card.pending .value { color: var(--pro); }
+  .stat-card.approved .value { color: var(--ok); }
+  .stat-card.rejected .value { color: var(--danger); }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tab {
+    padding: 10px 16px;
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:hover { color: var(--text-0); }
+
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .users-table th, .users-table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  .users-table th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    font-weight: 600;
+  }
+  .users-table tr:hover { background: var(--bg-2); }
+  .users-table .note {
+    color: var(--text-2);
+    font-size: 11px;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .users-table .actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 200;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 440px;
+    width: 100%;
+    padding: 28px;
+    box-shadow: var(--shadow);
+  }
+  .modal h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .modal .modal-desc { color: var(--text-2); font-size: 12px; margin-bottom: 18px; }
+  .modal-actions {
+    display: flex; gap: 10px; margin-top: 20px;
+  }
+
+  .mobile-table { display: none; }
+  @media (max-width: 720px) {
+    .users-table { display: none; }
+    .mobile-table { display: flex; flex-direction: column; gap: 12px; }
+    .mobile-card {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .mobile-card .username {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .mobile-card .meta {
+      font-size: 11px;
+      color: var(--text-2);
+      margin-bottom: 10px;
+    }
+    .mobile-card .actions {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="topbar">
+    <div>
+      <div class="logo mb-8"><div class="logo-mark">S</div><div class="logo-text">Shorts<span>Forge</span></div></div>
+      <h1>관리자 <span class="accent">패널</span></h1>
+    </div>
+    <div class="row">
+      <a class="btn btn-secondary" href="/">← 스튜디오로</a>
+      <button class="btn btn-ghost" onclick="logout()">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card pending"><div class="label">승인 대기</div><div class="value" id="stat-pending">-</div></div>
+    <div class="stat-card approved"><div class="label">승인 완료</div><div class="value" id="stat-approved">-</div></div>
+    <div class="stat-card rejected"><div class="label">거부됨</div><div class="value" id="stat-rejected">-</div></div>
+    <div class="stat-card"><div class="label">총 프로젝트</div><div class="value" id="stat-histories">-</div></div>
+  </div>
+
+  <div class="card">
+    <div class="row between mb-8">
+      <div>
+        <div class="card-title">사용자 관리</div>
+        <div class="card-desc">가입 신청 승인 및 구매자 관리</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="btn-add-user">+ 사용자 직접 추가</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-filter="all">전체</button>
+      <button class="tab" data-filter="pending">승인 대기 <span id="badge-pending"></span></button>
+      <button class="tab" data-filter="approved">승인됨</button>
+      <button class="tab" data-filter="rejected">거부됨</button>
+    </div>
+
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>아이디</th>
+          <th>상태</th>
+          <th>메모</th>
+          <th>프로젝트</th>
+          <th>가입일</th>
+          <th>액션</th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody"></tbody>
+    </table>
+    <div class="mobile-table" id="users-mobile"></div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-backdrop" id="add-modal">
+  <div class="modal">
+    <h2>사용자 직접 추가</h2>
+    <div class="modal-desc">승인 단계 없이 바로 사용 가능한 계정을 생성합니다</div>
+    <div class="form-grid" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="field">
+        <label>아이디</label>
+        <input type="text" id="new-username" />
+      </div>
+      <div class="field">
+        <label>초기 비밀번호</label>
+        <input type="text" id="new-password" />
+      </div>
+      <div class="field">
+        <label>메모 (선택)</label>
+        <input type="text" id="new-note" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary grow" id="btn-confirm-add">생성</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('add-modal').classList.remove('open')">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset PW Modal -->
+<div class="modal-backdrop" id="pw-modal">
+  <div class="modal">
+    <h2>비밀번호 초기화</h2>
+    <div class="modal-desc" id="pw-modal-desc"></div>
+    <div class="field">
+      <label>새 비밀번호</label>
+      <input type="text" id="new-pw" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary grow" id="btn-confirm-pw">변경</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('pw-modal').classList.remove('open')">취소</button>
+    </div>
+  </div>
+</div>
+
+<script src="/common.js"></script>
+<script>
+let allUsers = [];
+let currentFilter = 'all';
+let pwTargetId = null;
+
+async function init() {
+  const user = await requireLogin();
+  if (!user) return;
+  if (!user.is_admin) {
+    toast('관리자 권한이 필요합니다', 'error');
+    setTimeout(() => location.href = '/', 1000);
+    return;
+  }
+  await refresh();
+}
+
+async function refresh() {
+  try {
+    const [statsRes, usersRes] = await Promise.all([
+      api('/api/admin/stats'),
+      api('/api/admin/users')
+    ]);
+    document.getElementById('stat-pending').textContent = statsRes.stats.pending;
+    document.getElementById('stat-approved').textContent = statsRes.stats.approved;
+    document.getElementById('stat-rejected').textContent = statsRes.stats.rejected;
+    document.getElementById('stat-histories').textContent = statsRes.stats.total_histories;
+
+    const pBadge = document.getElementById('badge-pending');
+    pBadge.textContent = statsRes.stats.pending > 0 ? `(${statsRes.stats.pending})` : '';
+
+    allUsers = usersRes.users;
+    render();
+  } catch (e) {
+    toast('데이터 로드 실패', 'error');
+  }
+}
+
+function render() {
+  const tbody = document.getElementById('users-tbody');
+  const mobile = document.getElementById('users-mobile');
+  const filtered = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.status === currentFilter);
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">해당하는 사용자가 없습니다</td></tr>';
+    mobile.innerHTML = '<div class="empty">해당하는 사용자가 없습니다</div>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(u => {
+    const statusBadge = u.is_admin
+      ? '<span class="badge admin">관리자</span>'
+      : `<span class="badge ${u.status}">${u.status}</span>`;
+    return `
+      <tr>
+        <td><code class="inline">#${u.id}</code></td>
+        <td><strong>${escapeHtml(u.username)}</strong></td>
+        <td>${statusBadge}</td>
+        <td class="note" title="${escapeHtml(u.note || '')}">${escapeHtml(u.note || '-')}</td>
+        <td>${u.history_count}</td>
+        <td class="text-mute">${fmtDate(u.created_at)}</td>
+        <td class="actions">${renderActions(u)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  mobile.innerHTML = filtered.map(u => {
+    const statusBadge = u.is_admin
+      ? '<span class="badge admin">관리자</span>'
+      : `<span class="badge ${u.status}">${u.status}</span>`;
+    return `
+      <div class="mobile-card">
+        <div class="row between">
+          <div class="username">${escapeHtml(u.username)}</div>
+          ${statusBadge}
+        </div>
+        <div class="meta">
+          #${u.id} · 프로젝트 ${u.history_count}개 · ${fmtDate(u.created_at)}
+          ${u.note ? '<br>메모: ' + escapeHtml(u.note) : ''}
+        </div>
+        <div class="actions">${renderActions(u)}</div>
+      </div>
+    `;
+  }).join('');
+
+  bindRowActions();
+}
+
+function renderActions(u) {
+  if (u.is_admin) return '<span class="text-mute">-</span>';
+  const acts = [];
+  if (u.status === 'pending') {
+    acts.push(`<button class="btn btn-ok btn-sm" data-action="approve" data-id="${u.id}">승인</button>`);
+    acts.push(`<button class="btn btn-danger btn-sm" data-action="reject" data-id="${u.id}">거부</button>`);
+  } else if (u.status === 'approved') {
+    acts.push(`<button class="btn btn-danger btn-sm" data-action="revoke" data-id="${u.id}">차단</button>`);
+  } else if (u.status === 'rejected') {
+    acts.push(`<button class="btn btn-ok btn-sm" data-action="approve" data-id="${u.id}">재승인</button>`);
+  }
+  acts.push(`<button class="btn btn-secondary btn-sm" data-action="pw" data-id="${u.id}" data-name="${escapeHtml(u.username)}">비번변경</button>`);
+  acts.push(`<button class="btn btn-ghost btn-sm" data-action="delete" data-id="${u.id}">삭제</button>`);
+  return acts.join('');
+}
+
+function bindRowActions() {
+  $$('[data-action]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      try {
+        if (action === 'approve') {
+          await api(`/api/admin/users/${id}/approve`, { method: 'POST' });
+          toast('승인되었습니다', 'success');
+        } else if (action === 'reject') {
+          await api(`/api/admin/users/${id}/reject`, { method: 'POST' });
+          toast('거부되었습니다');
+        } else if (action === 'revoke') {
+          if (!confirm('이 사용자의 접근을 차단하시겠습니까?')) return;
+          await api(`/api/admin/users/${id}/revoke`, { method: 'POST' });
+          toast('차단되었습니다');
+        } else if (action === 'delete') {
+          if (!confirm('정말 삭제하시겠습니까? 해당 사용자의 모든 히스토리도 삭제됩니다.')) return;
+          await api(`/api/admin/users/${id}`, { method: 'DELETE' });
+          toast('삭제되었습니다');
+        } else if (action === 'pw') {
+          pwTargetId = id;
+          document.getElementById('pw-modal-desc').textContent = btn.dataset.name + ' 의 비밀번호를 변경합니다';
+          document.getElementById('new-pw').value = '';
+          document.getElementById('pw-modal').classList.add('open');
+          return;
+        }
+        await refresh();
+      } catch (e) {
+        toast(e.message || '실패', 'error');
+      }
+    });
+  });
+}
+
+// Tabs
+$$('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    $$('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentFilter = t.dataset.filter;
+    render();
+  });
+});
+
+// Add user
+document.getElementById('btn-add-user').addEventListener('click', () => {
+  document.getElementById('new-username').value = '';
+  document.getElementById('new-password').value = '';
+  document.getElementById('new-note').value = '';
+  document.getElementById('add-modal').classList.add('open');
+});
+
+document.getElementById('btn-confirm-add').addEventListener('click', async () => {
+  try {
+    await api('/api/admin/users', {
+      method: 'POST',
+      body: {
+        username: document.getElementById('new-username').value.trim(),
+        password: document.getElementById('new-password').value,
+        note: document.getElementById('new-note').value.trim()
+      }
+    });
+    toast('사용자 생성 완료', 'success');
+    document.getElementById('add-modal').classList.remove('open');
+    await refresh();
+  } catch (e) {
+    toast(e.message || '생성 실패', 'error');
+  }
+});
+
+// Reset pw
+document.getElementById('btn-confirm-pw').addEventListener('click', async () => {
+  const pw = document.getElementById('new-pw').value;
+  if (pw.length < 6) return toast('6자 이상', 'error');
+  try {
+    await api(`/api/admin/users/${pwTargetId}/reset-password`, {
+      method: 'POST',
+      body: { password: pw }
+    });
+    toast('비밀번호 변경됨', 'success');
+    document.getElementById('pw-modal').classList.remove('open');
+  } catch (e) {
+    toast(e.message || '실패', 'error');
+  }
+});
+
+init();
+</script>
+</body>
+</html>

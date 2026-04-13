@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ShortsForge — AI 쇼츠/시리즈 생성 스튜디오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/common.css">
+<style>
+  /* Studio 전용 스타일 */
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+  @media (max-width: 980px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .sidebar.mobile-open { display: flex; position: fixed; inset: 0; z-index: 100; }
+  }
+  .sidebar {
+    background: var(--bg-1);
+    border-right: 1px solid var(--line);
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar .logo { margin-bottom: 28px; padding: 0 6px; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-weight: 500;
+    transition: all 0.15s ease;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item:hover { background: var(--bg-2); color: var(--text-0); }
+  .nav-item.active {
+    background: var(--bg-3);
+    color: var(--accent);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .nav-item .icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+  .user-card {
+    margin-top: auto;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+  .user-card .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+  }
+  .user-card .name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 4px 0 8px;
+  }
+  .user-card button {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 12px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .main {
+    padding: 28px 36px 60px;
+    max-width: 1400px;
+    width: 100%;
+  }
+  @media (max-width: 720px) { .main { padding: 20px 16px 40px; } }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .topbar h1 {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .topbar h1 .accent { color: var(--accent); }
+  .topbar .sub { color: var(--text-2); margin-top: 6px; font-size: 13px; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .notice-banner {
+    background: linear-gradient(135deg, rgba(255,94,58,0.08), rgba(212,255,58,0.05));
+    border: 1px solid rgba(255,94,58,0.3);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .notice-banner .icon {
+    width: 32px; height: 32px;
+    background: var(--accent-2);
+    color: var(--bg-0);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .notice-banner strong { color: var(--accent); }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 8px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-1);
+    transition: all 0.15s;
+  }
+  .chip:hover { border-color: var(--line-2); color: var(--text-0); }
+  .chip.active {
+    background: var(--accent);
+    color: var(--bg-0);
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .scenes-wrap {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 980px) { .scenes-wrap { grid-template-columns: 1fr; } }
+
+  .preview-vertical {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: sticky;
+    top: 20px;
+  }
+  .preview-vertical .title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .phone {
+    aspect-ratio: 9 / 16;
+    background: linear-gradient(180deg, #000, #1a1a2e);
+    border-radius: 22px;
+    border: 8px solid #0a0a0f;
+    box-shadow: 0 0 0 1px var(--line-2), 0 30px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .phone .scene-num {
+    position: absolute;
+    top: 16px; left: 16px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    z-index: 2;
+  }
+  .phone .scene-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(212,255,58,0.1), rgba(58,138,255,0.15), rgba(255,94,58,0.1));
+    z-index: 0;
+  }
+  .phone .scene-desc {
+    position: absolute;
+    top: 50%; left: 16px; right: 16px;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    text-align: center;
+    line-height: 1.5;
+    z-index: 1;
+    font-style: italic;
+  }
+  .phone .caption {
+    position: relative;
+    z-index: 2;
+    margin: auto 16px 30px;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px);
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  }
+  .preview-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    gap: 8px;
+  }
+  .preview-controls button {
+    flex: 1;
+    padding: 8px;
+    background: var(--bg-3);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .preview-controls button:hover { color: var(--accent); }
+  .preview-dots {
+    display: flex; justify-content: center; gap: 6px; margin-top: 12px;
+  }
+  .preview-dots .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    cursor: pointer;
+  }
+  .preview-dots .dot.active { background: var(--accent); }
+
+  .scenes-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .scene-card {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    transition: border-color 0.15s;
+  }
+  .scene-card:hover { border-color: var(--line-2); }
+  .scene-card.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .scene-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .scene-tag { display: flex; align-items: center; gap: 10px; }
+  .scene-tag .num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: var(--bg-0);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-weight: 800;
+    font-family: var(--font-display);
+  }
+  .scene-tag .role {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .scene-tag .role .type {
+    font-size: 10px;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .scene-fields { display: flex; flex-direction: column; gap: 12px; }
+  .scene-field {
+    background: var(--bg-2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    border-left: 2px solid var(--line);
+  }
+  .scene-field.dialogue { border-left-color: var(--accent); }
+  .scene-field.caption { border-left-color: var(--accent-2); }
+  .scene-field.desc { border-left-color: var(--accent-3); }
+  .scene-field.prompt { border-left-color: var(--pro); }
+  .scene-field .k {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-2);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .scene-field .v {
+    font-size: 13px;
+    color: var(--text-0);
+    line-height: 1.55;
+    word-break: break-word;
+  }
+  .scene-field .v.mono { font-family: var(--font-mono); font-size: 11px; color: var(--text-1); }
+
+  .history-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .history-card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .history-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .history-card .ep {
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .history-card .h-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    margin: 4px 0 8px;
+    line-height: 1.3;
+  }
+  .history-card .h-topic {
+    font-size: 12px;
+    color: var(--text-2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .history-card .h-meta {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .history-card .h-meta span {
+    font-size: 10px;
+    background: var(--bg-3);
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: var(--text-1);
+  }
+  .history-card .h-del {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 24px; height: 24px;
+    background: var(--bg-3);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    color: var(--text-2);
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .history-card:hover .h-del { opacity: 1; }
+  .history-card .h-del:hover { color: var(--danger); }
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-2);
+    font-size: 13px;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .mobile-menu-btn {
+    display: none;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+  }
+  @media (max-width: 980px) {
+    .mobile-menu-btn { display: inline-flex; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">Shorts<span>Forge</span></div>
+    </div>
+
+    <button class="nav-item active" data-view="studio">
+      <span class="icon">🎬</span> 스튜디오
+    </button>
+    <button class="nav-item" data-view="history">
+      <span class="icon">📚</span> 히스토리
+    </button>
+    <button class="nav-item" data-view="apikeys">
+      <span class="icon">🔑</span> API 키
+    </button>
+    <button class="nav-item" data-view="docs">
+      <span class="icon">📖</span> 가이드
+    </button>
+    <button class="nav-item" id="nav-admin" style="display:none;">
+      <span class="icon">⚙️</span> 관리자 패널
+    </button>
+
+    <div class="user-card">
+      <div class="label">로그인 계정</div>
+      <div class="name" id="user-name">-</div>
+      <button class="btn btn-secondary" onclick="logout()">로그아웃</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1>AI <span class="accent">쇼츠 스튜디오</span></h1>
+        <div class="sub">주제만 입력하면 4컷 시나리오가 완성됩니다 — 시리즈 이어쓰기 지원</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">☰</button>
+        <span class="badge dot" id="api-status">API 키 미등록</span>
+      </div>
+    </div>
+
+    <div class="notice-banner">
+      <div class="icon">!</div>
+      <div>
+        본 서비스는 <strong>사용자 본인의 API 키</strong>로 직접 실행됩니다.
+        OpenAI 호출 비용은 사용자 계정으로 청구되며, ShortsForge 서버는 API 키를 절대 보관하거나 전송하지 않습니다.
+      </div>
+    </div>
+
+    <!-- STUDIO -->
+    <section class="view active" id="view-studio">
+      <div class="card">
+        <div class="card-title">기획 입력</div>
+        <div class="card-desc">시리즈 정보를 입력하고 4컷 장면을 생성하세요</div>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label>시리즈 제목</label>
+            <input id="f-title" placeholder="예: 그날 밤 사라진 그녀" />
+          </div>
+          <div class="field full">
+            <label>주제 / 시놉시스</label>
+            <textarea id="f-topic" placeholder="예: 3년 만에 다시 만난 첫사랑이 주인공을 전혀 기억하지 못하는 듯 행동하지만 사실은 일부러 모른 척하고 있었다"></textarea>
+          </div>
+          <div class="field">
+            <label>스타일</label>
+            <div class="chip-group" id="g-style">
+              <button class="chip active" data-val="애니">애니</button>
+              <button class="chip" data-val="실사">실사</button>
+              <button class="chip" data-val="3D">3D</button>
+              <button class="chip" data-val="동물 캐릭터">동물 캐릭터</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>분위기</label>
+            <div class="chip-group" id="g-mood">
+              <button class="chip active" data-val="감성">감성</button>
+              <button class="chip" data-val="웃긴">웃긴</button>
+              <button class="chip" data-val="공포">공포</button>
+              <button class="chip" data-val="반전">반전</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>영상 길이</label>
+            <div class="chip-group" id="g-length">
+              <button class="chip" data-val="15">15초</button>
+              <button class="chip active" data-val="30">30초</button>
+              <button class="chip" data-val="45">45초</button>
+              <button class="chip" data-val="60">60초</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>플랫폼</label>
+            <div class="chip-group" id="g-platform">
+              <button class="chip active" data-val="YouTube Shorts">YouTube</button>
+              <button class="chip" data-val="TikTok">TikTok</button>
+              <button class="chip" data-val="Reels">Reels</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>에피소드 번호</label>
+            <input type="number" id="f-episode" value="1" min="1" />
+          </div>
+          <div class="field">
+            <label>캐릭터 키워드</label>
+            <input id="f-character" placeholder="예: 검은 단발, 흰 셔츠, 슬픈 눈빛" />
+          </div>
+          <div class="field full">
+            <label>생성 모드</label>
+            <div class="chip-group" id="g-mode">
+              <button class="chip active" data-val="new">새 시리즈 시작</button>
+              <button class="chip" data-val="continue">이전 화 이어쓰기</button>
+            </div>
+            <div class="help" id="continue-info" style="display:none;">선택된 이전 화: <span id="prev-ep-name">없음</span></div>
+          </div>
+        </div>
+
+        <div class="row mt-20">
+          <button class="btn btn-primary btn-large" id="btn-generate">
+            <span>✨</span><span>장면 4컷 생성</span>
+          </button>
+          <button class="btn btn-secondary" id="btn-clear">초기화</button>
+          <div class="grow"></div>
+          <span class="text-mute" id="model-info">gpt-4o-mini</span>
+        </div>
+      </div>
+
+      <div id="result-section" style="display:none;">
+        <div class="card">
+          <div class="row between mb-8">
+            <div>
+              <div class="card-title" id="result-title">결과</div>
+              <div class="card-desc" id="result-meta"></div>
+            </div>
+            <div class="row">
+              <button class="btn btn-secondary" id="btn-save">💾 저장</button>
+              <button class="btn btn-secondary" id="btn-download-json">JSON</button>
+              <button class="btn btn-secondary" id="btn-download-txt">TXT</button>
+            </div>
+          </div>
+
+          <div class="scenes-wrap">
+            <div class="preview-vertical">
+              <div class="title">세로형 미리보기</div>
+              <div class="phone" id="phone-preview">
+                <div class="scene-bg"></div>
+                <div class="scene-num" id="phone-num">Scene 1</div>
+                <div class="scene-desc" id="phone-desc">생성된 장면이 여기에 표시됩니다</div>
+                <div class="caption" id="phone-caption">자막 미리보기</div>
+              </div>
+              <div class="preview-controls">
+                <button id="prev-scene">← 이전</button>
+                <button id="next-scene">다음 →</button>
+              </div>
+              <div class="preview-dots" id="preview-dots"></div>
+            </div>
+            <div class="scenes-list" id="scenes-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="view" id="view-history">
+      <div class="card">
+        <div class="row between mb-8">
+          <div>
+            <div class="card-title">프로젝트 히스토리</div>
+            <div class="card-desc">저장된 시리즈 / 에피소드를 불러오거나 이어쓸 수 있습니다</div>
+          </div>
+          <button class="btn btn-danger" id="btn-clear-all">전체 삭제</button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+    </section>
+
+    <!-- API KEYS -->
+    <section class="view" id="view-apikeys">
+      <div class="card">
+        <div class="card-title">API 키 등록</div>
+        <div class="card-desc">키는 본인의 브라우저에만 저장되며, ShortsForge 서버로 절대 전송되지 않습니다</div>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label>OpenAI API Key <span style="color:var(--accent)">(필수)</span></label>
+            <input type="password" id="key-openai" placeholder="sk-..." />
+            <div class="help">platform.openai.com 에서 발급</div>
+          </div>
+          <div class="field">
+            <label>OpenAI 모델</label>
+            <select id="key-model">
+              <option value="gpt-4o-mini">gpt-4o-mini (저렴, 빠름)</option>
+              <option value="gpt-4o">gpt-4o (고품질)</option>
+              <option value="gpt-4-turbo">gpt-4-turbo</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>API Base URL (선택)</label>
+            <input id="key-base" placeholder="https://api.openai.com/v1" />
+            <div class="help">호환 API 사용 시 (Groq 등)</div>
+          </div>
+          <div class="field full">
+            <label>이미지 생성 API Key (선택, 확장용)</label>
+            <input type="password" id="key-image" placeholder="DALL-E / Stability 등" />
+          </div>
+          <div class="field full">
+            <label>TTS API Key (선택, 확장용)</label>
+            <input type="password" id="key-tts" placeholder="ElevenLabs / OpenAI TTS 등" />
+          </div>
+        </div>
+
+        <div class="row mt-20">
+          <button class="btn btn-primary" id="btn-save-keys">키 저장</button>
+          <button class="btn btn-secondary" id="btn-test-key">연결 테스트</button>
+          <button class="btn btn-danger" id="btn-clear-keys">키 삭제</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section class="view" id="view-docs">
+      <div class="card">
+        <div class="card-title">시작 가이드</div>
+        <div class="card-desc">3분 안에 첫 쇼츠 기획을 만드는 방법</div>
+        <ol style="padding-left: 20px; line-height: 2; color: var(--text-1); font-size: 14px;">
+          <li><strong>API 키 등록</strong> — 좌측 메뉴 [API 키]에서 OpenAI 키를 입력하세요. <code class="inline">sk-</code>로 시작합니다.</li>
+          <li><strong>주제 입력</strong> — [스튜디오]에서 시리즈 제목과 주제를 자유롭게 작성하세요.</li>
+          <li><strong>스타일 선택</strong> — 애니/실사/3D 등 원하는 스타일과 분위기를 선택합니다.</li>
+          <li><strong>장면 생성</strong> — [장면 4컷 생성] 버튼을 누르면 GPT가 후킹→전개→반전→엔딩 4컷을 만듭니다.</li>
+          <li><strong>저장 / 다운로드</strong> — JSON 또는 TXT로 내려받거나 히스토리에 저장합니다 (서버 저장).</li>
+          <li><strong>이어쓰기</strong> — 히스토리에서 이전 화를 불러오면 자동으로 [이어쓰기] 모드가 됩니다.</li>
+        </ol>
+        <div class="divider"></div>
+        <div class="card-title" style="font-size:15px;">자주 묻는 질문</div>
+        <div class="mt-12 text-mute" style="line-height:1.8;">
+          <p><strong style="color:var(--text-0)">Q. 내 API 키는 안전한가요?</strong><br>키는 브라우저 localStorage에만 저장되며, ShortsForge 서버로 절대 전송되지 않습니다. 모든 API 호출은 브라우저 → OpenAI 직통입니다.</p>
+          <p class="mt-12"><strong style="color:var(--text-0)">Q. 비용은 누가 부담하나요?</strong><br>OpenAI 호출 비용은 등록한 본인 계정으로 청구됩니다.</p>
+          <p class="mt-12"><strong style="color:var(--text-0)">Q. 히스토리는 어디 저장되나요?</strong><br>로그인 계정 기준으로 서버 DB에 저장되며, 기기를 바꿔도 동일하게 조회됩니다. 본인 계정의 데이터만 조회됩니다.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="big-spinner"></div>
+  <div class="text" id="loading-text">GPT가 시나리오를 작성 중입니다...</div>
+</div>
+
+<script src="/common.js"></script>
+<script>
+/* =====================================================================
+   ShortsForge - 메인 스튜디오 (서버 연동 버전)
+===================================================================== */
+
+const LS_KEYS = 'sf_keys_v2'; // API 키만 localStorage
+
+const state = {
+  form: {
+    title: '', topic: '',
+    style: '애니', mood: '감성', length: '30',
+    platform: 'YouTube Shorts',
+    episode: 1, character: '',
+    mode: 'new'
+  },
+  result: null,
+  currentScene: 0,
+  prevEpisode: null,
+  user: null,
+  keys: {},
+  history: []
+};
+
+function loadLS(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; }
+}
+function saveLS(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36); }
+
+/* ---------- KEYS ---------- */
+function loadKeys() {
+  state.keys = loadLS(LS_KEYS, { openai:'', model:'gpt-4o-mini', base:'', image:'', tts:'' });
+  $('#key-openai').value = state.keys.openai || '';
+  $('#key-model').value = state.keys.model || 'gpt-4o-mini';
+  $('#key-base').value = state.keys.base || '';
+  $('#key-image').value = state.keys.image || '';
+  $('#key-tts').value = state.keys.tts || '';
+  refreshApiStatus();
+}
+function refreshApiStatus() {
+  const has = !!state.keys.openai;
+  const el = $('#api-status');
+  if (has) {
+    el.textContent = '● API 연결됨';
+    el.style.color = 'var(--ok)';
+    el.style.borderColor = 'rgba(77,255,168,0.3)';
+  } else {
+    el.textContent = '● API 키 미등록';
+    el.style.color = 'var(--text-2)';
+    el.style.borderColor = 'var(--line)';
+  }
+  $('#model-info').textContent = state.keys.model || 'gpt-4o-mini';
+}
+function saveKeys() {
+  state.keys = {
+    openai: $('#key-openai').value.trim(),
+    model: $('#key-model').value,
+    base: $('#key-base').value.trim(),
+    image: $('#key-image').value.trim(),
+    tts: $('#key-tts').value.trim()
+  };
+  saveLS(LS_KEYS, state.keys);
+  refreshApiStatus();
+  toast('API 키가 브라우저에 저장되었습니다', 'success');
+}
+function clearKeys() {
+  if (!confirm('저장된 모든 API 키를 삭제하시겠습니까?')) return;
+  state.keys = { openai:'', model:'gpt-4o-mini', base:'', image:'', tts:'' };
+  saveLS(LS_KEYS, state.keys);
+  loadKeys();
+  toast('키가 삭제되었습니다');
+}
+async function testKey() {
+  if (!state.keys.openai) return toast('OpenAI 키를 먼저 입력하세요','error');
+  $('#loading-text').textContent = '연결 테스트 중...';
+  $('#loading').classList.add('show');
+  try {
+    const out = await callOpenAI([
+      { role: 'system', content: 'Reply with JSON: {"ok": true}' },
+      { role: 'user', content: 'ping' }
+    ]);
+    JSON.parse(out);
+    toast('연결 성공! ✓', 'success');
+  } catch (e) {
+    toast('연결 실패: ' + e.message, 'error');
+  } finally {
+    $('#loading').classList.remove('show');
+    $('#loading-text').textContent = 'GPT가 시나리오를 작성 중입니다...';
+  }
+}
+
+/* ---------- NAVIGATION ---------- */
+function setView(name) {
+  $$('.view').forEach(v => v.classList.remove('active'));
+  $$('.nav-item').forEach(b => b.classList.remove('active'));
+  $('#view-' + name).classList.add('active');
+  $$('.nav-item').forEach(b => { if (b.dataset.view === name) b.classList.add('active'); });
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  if (name === 'history') renderHistory();
+}
+
+/* ---------- CHIPS ---------- */
+function bindChips(groupId, key) {
+  const el = $('#'+groupId);
+  el.addEventListener('click', e => {
+    const b = e.target.closest('.chip');
+    if (!b) return;
+    $$('.chip', el).forEach(c => c.classList.remove('active'));
+    b.classList.add('active');
+    state.form[key] = b.dataset.val;
+    if (key === 'mode') {
+      $('#continue-info').style.display = b.dataset.val === 'continue' ? 'block' : 'none';
+      if (b.dataset.val === 'continue' && !state.prevEpisode) {
+        toast('이어쓸 이전 화를 [히스토리]에서 먼저 선택하세요', 'error');
+      }
+    }
+  });
+}
+
+function bindForm() {
+  $('#f-title').addEventListener('input', e => state.form.title = e.target.value);
+  $('#f-topic').addEventListener('input', e => state.form.topic = e.target.value);
+  $('#f-episode').addEventListener('input', e => state.form.episode = parseInt(e.target.value) || 1);
+  $('#f-character').addEventListener('input', e => state.form.character = e.target.value);
+  bindChips('g-style', 'style');
+  bindChips('g-mood', 'mood');
+  bindChips('g-length', 'length');
+  bindChips('g-platform', 'platform');
+  bindChips('g-mode', 'mode');
+}
+
+function clearForm() {
+  state.form = { title:'', topic:'', style:'애니', mood:'감성', length:'30', platform:'YouTube Shorts', episode:1, character:'', mode:'new' };
+  $('#f-title').value = ''; $('#f-topic').value = '';
+  $('#f-episode').value = 1; $('#f-character').value = '';
+  state.prevEpisode = null;
+  $('#continue-info').style.display = 'none';
+  ['style','mood','length','platform','mode'].forEach(key => {
+    $$('.chip', $('#g-'+key)).forEach(c => c.classList.remove('active'));
+  });
+  $$('.chip[data-val="애니"]', $('#g-style'))[0]?.classList.add('active');
+  $$('.chip[data-val="감성"]', $('#g-mood'))[0]?.classList.add('active');
+  $$('.chip[data-val="30"]', $('#g-length'))[0]?.classList.add('active');
+  $$('.chip[data-val="YouTube Shorts"]', $('#g-platform'))[0]?.classList.add('active');
+  $$('.chip[data-val="new"]', $('#g-mode'))[0]?.classList.add('active');
+  $('#result-section').style.display = 'none';
+  state.result = null;
+  toast('초기화되었습니다');
+}
+
+/* ---------- OPENAI CALL ---------- */
+async function callOpenAI(messages, model) {
+  const base = (state.keys.base || 'https://api.openai.com/v1').replace(/\/$/, '');
+  const url = base + '/chat/completions';
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + state.keys.openai
+    },
+    body: JSON.stringify({
+      model: model || state.keys.model || 'gpt-4o-mini',
+      messages,
+      temperature: 0.85,
+      response_format: { type: 'json_object' }
+    })
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('API 오류 (' + res.status + '): ' + err.slice(0, 200));
+  }
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || '';
+}
+
+function buildPrompt(form, prevEpisode) {
+  const charDirective = form.character
+    ? `\n캐릭터 키워드(반드시 모든 장면 이미지 프롬프트에 영문으로 포함, "same character identity" 개념을 적용): ${form.character}`
+    : '';
+  const continueDirective = (form.mode === 'continue' && prevEpisode)
+    ? `\n\n[이전 화 컨텍스트 — 감정선과 줄거리를 반드시 자연스럽게 이어갈 것]
+이전 에피소드: ${prevEpisode.episode}화 "${prevEpisode.title}"
+이전 줄거리 요약: ${prevEpisode.topic}
+이전 마지막 장면: ${prevEpisode.scenes?.[3]?.dialogue || ''} / ${prevEpisode.scenes?.[3]?.description || ''}
+→ 이 흐름을 이어받아 ${form.episode}화를 작성하세요.`
+    : '';
+
+  const sys = `당신은 한국어 숏폼 영상 시나리오 작가입니다.
+${form.platform} (${form.length}초) 분량의 영상을 위한 정확히 4개의 장면을 작성하세요.
+출력은 반드시 아래 JSON 스키마를 따라야 합니다 (다른 텍스트 금지):
+
+{
+  "title": "시리즈 제목",
+  "episode": 숫자,
+  "logline": "한 줄 요약",
+  "scenes": [
+    {
+      "scene": 1,
+      "role": "후킹",
+      "dialogue": "캐릭터의 대사 (한국어, 자연스럽게)",
+      "caption": "화면에 표시되는 자막 문구 (짧고 임팩트 있게, 15자 이내 권장)",
+      "description": "장면 설명 (배경, 인물 동작, 카메라 앵글)",
+      "image_prompt": "이미지 생성용 영문 프롬프트 (구체적, ${form.style} style, cinematic, 9:16 aspect ratio, same character identity 포함)"
+    },
+    { "scene": 2, "role": "전개", ... },
+    { "scene": 3, "role": "반전", ... },
+    { "scene": 4, "role": "엔딩", ... }
+  ]
+}
+
+규칙:
+- scene 1: 후킹 (시청자를 3초 안에 사로잡기)
+- scene 2: 전개 (상황 발전)
+- scene 3: 반전 (예상 밖 전개)
+- scene 4: 엔딩 (여운 또는 다음 화 떡밥)
+- 분위기: ${form.mood}
+- 스타일: ${form.style}
+- 모든 image_prompt는 영문, 동일 캐릭터 일관성 유지
+- 절대 JSON 외 텍스트 출력 금지${charDirective}${continueDirective}`;
+
+  const user = `시리즈 제목: ${form.title}
+주제: ${form.topic}
+에피소드: ${form.episode}화
+스타일: ${form.style}, 분위기: ${form.mood}, 길이: ${form.length}초
+플랫폼: ${form.platform}`;
+
+  return [
+    { role: 'system', content: sys },
+    { role: 'user', content: user }
+  ];
+}
+
+/* ---------- GENERATE ---------- */
+async function generate() {
+  if (!state.keys.openai) {
+    toast('먼저 OpenAI API 키를 등록하세요', 'error');
+    setView('apikeys');
+    return;
+  }
+  if (!state.form.title.trim() || !state.form.topic.trim()) {
+    toast('제목과 주제를 입력하세요', 'error');
+    return;
+  }
+  if (state.form.mode === 'continue' && !state.prevEpisode) {
+    toast('이어쓸 이전 화가 선택되지 않았습니다 (히스토리에서 선택)', 'error');
+    return;
+  }
+
+  $('#loading').classList.add('show');
+  $('#btn-generate').disabled = true;
+
+  try {
+    const messages = buildPrompt(state.form, state.prevEpisode);
+    const raw = await callOpenAI(messages);
+    let parsed;
+    try { parsed = JSON.parse(raw); }
+    catch {
+      const m = raw.match(/\{[\s\S]*\}/);
+      if (!m) throw new Error('GPT가 JSON 형식으로 응답하지 않았습니다');
+      parsed = JSON.parse(m[0]);
+    }
+
+    if (!parsed.scenes || !Array.isArray(parsed.scenes) || parsed.scenes.length < 4) {
+      throw new Error('Scene 4컷이 올바르게 생성되지 않았습니다');
+    }
+
+    parsed.scenes = parsed.scenes.slice(0, 4).map((s, i) => ({
+      scene: i + 1,
+      role: s.role || ['후킹','전개','반전','엔딩'][i],
+      dialogue: s.dialogue || '',
+      caption: s.caption || '',
+      description: s.description || '',
+      image_prompt: s.image_prompt || ''
+    }));
+
+    state.result = {
+      id: uid(),
+      title: parsed.title || state.form.title,
+      episode: parsed.episode || state.form.episode,
+      logline: parsed.logline || '',
+      topic: state.form.topic,
+      style: state.form.style,
+      mood: state.form.mood,
+      length: state.form.length,
+      platform: state.form.platform,
+      character: state.form.character,
+      scenes: parsed.scenes,
+      createdAt: Date.now(),
+      mode: state.form.mode,
+      parentId: state.prevEpisode?.id || null
+    };
+    state.currentScene = 0;
+    renderResult();
+    toast('4컷 생성 완료!', 'success');
+  } catch (e) {
+    console.error(e);
+    toast(e.message || '생성 실패', 'error');
+  } finally {
+    $('#loading').classList.remove('show');
+    $('#btn-generate').disabled = false;
+  }
+}
+
+function renderResult() {
+  const r = state.result;
+  if (!r) return;
+  $('#result-section').style.display = 'block';
+  $('#result-title').textContent = r.title + ' — ' + r.episode + '화';
+  $('#result-meta').textContent = `${r.style} · ${r.mood} · ${r.length}초 · ${r.platform}` + (r.logline ? ` · ${r.logline}` : '');
+
+  const list = $('#scenes-list');
+  list.innerHTML = '';
+  r.scenes.forEach((s, idx) => {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    if (idx === state.currentScene) card.classList.add('selected');
+    card.dataset.idx = idx;
+    card.innerHTML = `
+      <div class="scene-head">
+        <div class="scene-tag">
+          <div class="num">${s.scene}</div>
+          <div class="role">${escapeHtml(s.role)}<span class="type">Scene ${s.scene}</span></div>
+        </div>
+      </div>
+      <div class="scene-fields">
+        <div class="scene-field dialogue">
+          <div class="k">대사</div>
+          <div class="v">${escapeHtml(s.dialogue)}</div>
+        </div>
+        <div class="scene-field caption">
+          <div class="k">자막</div>
+          <div class="v">${escapeHtml(s.caption)}</div>
+        </div>
+        <div class="scene-field desc">
+          <div class="k">장면 설명</div>
+          <div class="v">${escapeHtml(s.description)}</div>
+        </div>
+        <div class="scene-field prompt">
+          <div class="k">이미지 프롬프트 (영문)</div>
+          <div class="v mono">${escapeHtml(s.image_prompt)}</div>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', () => { state.currentScene = idx; renderResult(); });
+    list.appendChild(card);
+  });
+
+  const cur = r.scenes[state.currentScene];
+  $('#phone-num').textContent = `Scene ${cur.scene} · ${cur.role}`;
+  $('#phone-desc').textContent = cur.description;
+  $('#phone-caption').textContent = cur.caption;
+
+  const dots = $('#preview-dots');
+  dots.innerHTML = '';
+  r.scenes.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === state.currentScene ? ' active' : '');
+    d.addEventListener('click', () => { state.currentScene = i; renderResult(); });
+    dots.appendChild(d);
+  });
+}
+
+/* ---------- HISTORY (SERVER) ---------- */
+async function loadHistory() {
+  try {
+    const { histories } = await api('/api/history');
+    state.history = histories.map(h => ({ ...h.data, _dbId: h.id, _createdAt: h.created_at }));
+  } catch (e) {
+    console.error(e);
+    toast('히스토리 로드 실패', 'error');
+    state.history = [];
+  }
+}
+
+async function saveCurrent() {
+  if (!state.result) { toast('저장할 결과가 없습니다', 'error'); return; }
+  try {
+    await api('/api/history', { method: 'POST', body: state.result });
+    toast('서버에 저장되었습니다 ✓', 'success');
+  } catch (e) {
+    toast(e.message || '저장 실패', 'error');
+  }
+}
+
+async function renderHistory() {
+  await loadHistory();
+  const list = $('#history-list');
+  list.innerHTML = '';
+  if (state.history.length === 0) {
+    list.innerHTML = '<div class="empty">아직 저장된 프로젝트가 없습니다</div>';
+    return;
+  }
+  state.history.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+      <button class="h-del" title="삭제">×</button>
+      <div class="ep">EP ${h.episode}</div>
+      <div class="h-title">${escapeHtml(h.title)}</div>
+      <div class="h-topic">${escapeHtml(h.topic)}</div>
+      <div class="h-meta">
+        <span>${escapeHtml(h.style)}</span>
+        <span>${escapeHtml(h.mood)}</span>
+        <span>${h.length}s</span>
+        ${h.parentId ? '<span>↳ 이어쓰기</span>' : ''}
+      </div>
+    `;
+    card.addEventListener('click', async (e) => {
+      if (e.target.closest('.h-del')) {
+        if (!confirm('이 프로젝트를 삭제하시겠습니까?')) return;
+        try {
+          await api('/api/history/' + h.id, { method: 'DELETE' });
+          toast('삭제되었습니다');
+          renderHistory();
+        } catch (e) { toast(e.message || '삭제 실패', 'error'); }
+        return;
+      }
+      loadFromHistory(h);
+    });
+    list.appendChild(card);
+  });
+}
+
+function loadFromHistory(h) {
+  state.form.title = h.title;
+  state.form.topic = h.topic;
+  state.form.style = h.style;
+  state.form.mood = h.mood;
+  state.form.length = String(h.length);
+  state.form.platform = h.platform;
+  state.form.episode = (h.episode || 1) + 1;
+  state.form.character = h.character || '';
+  state.form.mode = 'continue';
+  state.prevEpisode = h;
+
+  $('#f-title').value = state.form.title;
+  $('#f-topic').value = state.form.topic;
+  $('#f-episode').value = state.form.episode;
+  $('#f-character').value = state.form.character;
+
+  [['g-style', state.form.style], ['g-mood', state.form.mood], ['g-length', state.form.length],
+   ['g-platform', state.form.platform], ['g-mode', 'continue']].forEach(([g, val]) => {
+    $$('.chip', $('#'+g)).forEach(c => c.classList.toggle('active', c.dataset.val === String(val)));
+  });
+
+  $('#continue-info').style.display = 'block';
+  $('#prev-ep-name').textContent = h.title + ' ' + h.episode + '화';
+
+  state.result = h;
+  state.currentScene = 0;
+  renderResult();
+  setView('studio');
+  toast('이어쓰기 모드로 불러왔습니다 — 에피소드 ' + state.form.episode);
+}
+
+async function clearAllHistory() {
+  if (!confirm('모든 히스토리를 서버에서 삭제하시겠습니까?')) return;
+  try {
+    await api('/api/history', { method: 'DELETE' });
+    toast('전체 삭제됨');
+    renderHistory();
+  } catch (e) { toast(e.message || '삭제 실패', 'error'); }
+}
+
+/* ---------- DOWNLOAD ---------- */
+function downloadJSON() {
+  if (!state.result) return toast('결과가 없습니다','error');
+  const blob = new Blob([JSON.stringify(state.result, null, 2)], { type: 'application/json' });
+  triggerDownload(blob, `${slug(state.result.title)}_ep${state.result.episode}.json`);
+}
+function downloadTXT() {
+  if (!state.result) return toast('결과가 없습니다','error');
+  const r = state.result;
+  let txt = `${r.title} — ${r.episode}화\n`;
+  txt += `${r.style} · ${r.mood} · ${r.length}초 · ${r.platform}\n`;
+  if (r.logline) txt += `\n[로그라인] ${r.logline}\n`;
+  txt += `\n[주제]\n${r.topic}\n`;
+  if (r.character) txt += `\n[캐릭터] ${r.character}\n`;
+  txt += '\n========================================\n\n';
+  r.scenes.forEach(s => {
+    txt += `■ Scene ${s.scene} — ${s.role}\n`;
+    txt += `  대사: ${s.dialogue}\n`;
+    txt += `  자막: ${s.caption}\n`;
+    txt += `  설명: ${s.description}\n`;
+    txt += `  이미지 프롬프트: ${s.image_prompt}\n\n`;
+  });
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  triggerDownload(blob, `${slug(r.title)}_ep${r.episode}.txt`);
+}
+function slug(s) { return String(s).replace(/[^\w가-힣]+/g, '_').slice(0, 40); }
+function triggerDownload(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('다운로드 시작: ' + name, 'success');
+}
+
+/* ---------- INIT ---------- */
+async function init() {
+  const user = await requireLogin();
+  if (!user) return;
+  state.user = user;
+  $('#user-name').textContent = user.username;
+  if (user.is_admin) {
+    const navAdmin = $('#nav-admin');
+    navAdmin.style.display = 'flex';
+    navAdmin.addEventListener('click', () => location.href = '/admin.html');
+  }
+
+  loadKeys();
+  bindForm();
+
+  $$('.nav-item[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+  $('#btn-generate').addEventListener('click', generate);
+  $('#btn-clear').addEventListener('click', clearForm);
+  $('#btn-save').addEventListener('click', saveCurrent);
+  $('#btn-download-json').addEventListener('click', downloadJSON);
+  $('#btn-download-txt').addEventListener('click', downloadTXT);
+  $('#btn-save-keys').addEventListener('click', saveKeys);
+  $('#btn-test-key').addEventListener('click', testKey);
+  $('#btn-clear-keys').addEventListener('click', clearKeys);
+  $('#btn-clear-all').addEventListener('click', clearAllHistory);
+
+  $('#prev-scene').addEventListener('click', () => {
+    if (!state.result) return;
+    state.currentScene = (state.currentScene - 1 + 4) % 4;
+    renderResult();
+  });
+  $('#next-scene').addEventListener('click', () => {
+    if (!state.result) return;
+    state.currentScene = (state.currentScene + 1) % 4;
+    renderResult();
+  });
+
+  // 첫 방문 예시 자동 채우기
+  if (!loadLS('sf_first_done', false)) {
+    state.form.title = '그날 밤 사라진 그녀';
+    state.form.topic = '3년 만에 다시 만난 첫사랑이 주인공을 전혀 기억하지 못하는 듯 행동하지만 사실은 일부러 모른 척하고 있었다';
+    state.form.character = '검은 단발, 흰 셔츠, 슬픈 눈빛';
+    $('#f-title').value = state.form.title;
+    $('#f-topic').value = state.form.topic;
+    $('#f-character').value = state.form.character;
+    saveLS('sf_first_done', true);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

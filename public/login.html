@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>로그인 — ShortsForge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/common.css">
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="logo">
+      <div class="logo-mark">S</div>
+      <div class="logo-text">Shorts<span>Forge</span></div>
+    </div>
+    <h1>로그인</h1>
+    <div class="sub">승인된 사용자만 접속할 수 있습니다</div>
+
+    <form class="form-grid" id="login-form" autocomplete="on">
+      <div class="field">
+        <label>아이디</label>
+        <input type="text" id="username" autocomplete="username" required />
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-large" id="login-btn">로그인</button>
+    </form>
+
+    <div class="footer-link">
+      아직 계정이 없으신가요? <a href="/signup.html">가입 신청</a>
+    </div>
+  </div>
+</div>
+
+<script src="/common.js"></script>
+<script>
+// 이미 로그인돼 있으면 메인으로
+(async () => {
+  try {
+    await api('/api/auth/me');
+    location.href = '/';
+  } catch {}
+})();
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = '로그인 중...';
+  try {
+    const { user } = await api('/api/auth/login', {
+      method: 'POST',
+      body: {
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value
+      }
+    });
+    toast('환영합니다 ' + user.username, 'success');
+    setTimeout(() => { location.href = user.is_admin ? '/admin.html' : '/'; }, 500);
+  } catch (e) {
+    toast(e.message || '로그인 실패', 'error');
+    btn.disabled = false;
+    btn.textContent = '로그인';
+  }
+});
+</script>
+</body>
+</html>
